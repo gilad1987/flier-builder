@@ -2,8 +2,12 @@
 
 Welcome to your kick application!
 
+http://giladt.com/flier-builder/dist/
+
 
 ## Before you start
+
+
 
 * Check ```environments.json``` file
 
