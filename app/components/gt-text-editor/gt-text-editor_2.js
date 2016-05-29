@@ -16,6 +16,7 @@ class gtTextEditorController {
     this.cbBeforeKeydown = [];
     this.restoreRangeBeforeWrite = false;
     this.brCounter = 0;
+    this.spanCounter = 0;
   }
 
   getAllStyleIsOn(){
@@ -122,6 +123,7 @@ class gtTextEditorController {
 
     this.contentElement.addEventListener('keydown',(event) => {
 
+      console.log('keydown');
       this.waitToChange = true;
 
       /**
@@ -147,9 +149,10 @@ class gtTextEditorController {
         span.appendChild(br);
 
         span.id = ++this.brCounter;
+        span.className = 'br';
 
         let saveRange = this.saveSelection();
-        if(sc.parentNode.nodeName=='SPAN' ){ //this.lastIsBrElement==false
+        if(sc.parentNode.nodeName=='SPAN' && r.startOffset!=0 ){ //this.lastIsBrElement==false
           let startText = sc.nodeValue.toString().substr(0,r.startOffset);
           let endText = sc.nodeValue.toString().substr(r.endOffset,sc.length);
           let rightRange = this.insertTextAtCursor(sc.parentNode.className,endText,sc.parentNode,true);
@@ -174,8 +177,15 @@ class gtTextEditorController {
             //r = this.saveSelection();
             //this.restoreSelection(r);
             //r = saveRange.cloneRange();
-            r.insertNode(span);
-            r.setStartAfter(span);
+
+            if(sc.nodeName=='SPAN'){
+              r.insertNode(span);
+              r.setStartAfter(sc);
+            }else{
+              r.insertNode(span);
+              r.setStartAfter(span);
+            }
+
           }
 
           s.addRange(r);
@@ -189,7 +199,7 @@ class gtTextEditorController {
         return false;
       }
 
-      this.checkTextIsWithoutSpanWrapper();
+      this.checkTextIsWithoutSpanWrapper(event.keyCode);
       this.applyStyle(this.isBold,'bold');
       this.applyStyle(this.isItalic,'italic');
       this.applyStyle(this.isUnderscore,'underscore');
@@ -215,12 +225,18 @@ class gtTextEditorController {
   }
 
 
-  checkTextIsWithoutSpanWrapper(){
+  checkTextIsWithoutSpanWrapper(eventKeyCode){
     let s = window.getSelection();
     let r = s.getRangeAt(0);
     let sc = r.startContainer;
+    let parent = sc;
 
-    if(sc.firstChild && sc.firstChild.nodeName =='BR'){
+    if((r.startOffset==0 && sc.length!=0) || sc.firstChild && sc.firstChild.nodeName =='BR' || (sc && sc.nodeName == '#text' && sc.parentNode.nodeName != 'SPAN') ){ //
+
+      // when select text and press any key
+      if(sc.nodeName=='#text'){
+        parent = sc.parentNode;
+      }
       let className = this.getAllStyleIsOn();
       //if(this.restoreRangeBeforeWrite){
         r = this.saveSelection();
@@ -229,15 +245,22 @@ class gtTextEditorController {
         this.lastIsBrElement=false;
         this.brElementReference=null;
       //}
-      this.insertTextAtCursor(className,'',sc,false);
+      console.log(parent);
+      this.insertTextAtCursor(className,'',parent,false);
     }
   }
 
+  toggleUnderscore(){
+    this.isUnderscore = !this.isUnderscore;
+    let r = this.saveSelection();
+    this.restoreSelection(r);
+    this.waitToChange = true;
+  }
 
   toggleBold(){
     this.isBold = !this.isBold;
     let r = this.saveSelection();
-    this.restoreSelection(r);
+    this.restoreSelection(r,false);
     this.waitToChange = true;
   }
 
@@ -307,12 +330,7 @@ class gtTextEditorController {
   }
 
 
-  toggleUnderscore(){
-    this.isUnderscore = !this.isUnderscore;
-    let r = this.saveSelection();
-    this.restoreSelection(r);
-    this.waitToChange = true;
-  }
+
 
   insertAfter(newElement,targetElement) {
     //target is what you want it to go after. Look for this elements parent.
@@ -344,6 +362,7 @@ class gtTextEditorController {
 
       var textNode = document.createElement('span');
       textNode.className = className;
+      textNode.id = ++this.spanCounter;
       textNode.innerHTML = text ? text :'\u200B';
 
       if(afterNode){
@@ -352,10 +371,12 @@ class gtTextEditorController {
           this.insertAfter(newElement,afterNode);
         }
 
-        if(afterNode.firstChild.nodeName=='BR'){
+        if(afterNode.firstChild && afterNode.firstChild.nodeName=='BR'){
           range.setStartBefore(afterNode);
+          console.log('setStartBefore');
         }else{
           range.setStartAfter(afterNode.nextSibling);
+          console.log('setStartAfter');
         }
 
         range.insertNode(textNode);
@@ -381,11 +402,15 @@ class gtTextEditorController {
 
   }
 
-  restoreSelection(range) {
+  restoreSelection(range,deleteContent) {
   if (range) {
+    deleteContent = typeof deleteContent == 'undefined' ? false : deleteContent;
     if (window.getSelection) {
       let sel = window.getSelection();
-      range.deleteContents();
+
+      if(deleteContent){
+        range.deleteContents();
+      }
       sel.removeAllRanges();
       sel.addRange(range);
     } else if (document.selection && range.select) {
