@@ -123,7 +123,7 @@ class gtTextEditorController {
 
     this.contentElement.addEventListener('keydown',(event) => {
 
-      console.log('keydown');
+      //console.log('keydown');
       this.waitToChange = true;
 
       /**
@@ -146,13 +146,16 @@ class gtTextEditorController {
         let ec = r.endContainer;
         let br = document.createElement('br');
         let span = document.createElement('span');
+        span.innerHTML = "\u200B";
         span.appendChild(br);
 
         span.id = ++this.brCounter;
         span.className = 'br';
 
         let saveRange = this.saveSelection();
-        if(sc.parentNode.nodeName=='SPAN' && r.startOffset!=0 ){ //this.lastIsBrElement==false
+        //console.log(sc.data);
+        //console.log(r.startOffset);
+        if(sc.parentNode.nodeName=='SPAN' && r.startOffset!=0 && sc.data!=''){ //this.lastIsBrElement==false
           let startText = sc.nodeValue.toString().substr(0,r.startOffset);
           let endText = sc.nodeValue.toString().substr(r.endOffset,sc.length);
           let rightRange = this.insertTextAtCursor(sc.parentNode.className,endText,sc.parentNode,true);
@@ -179,11 +182,17 @@ class gtTextEditorController {
             //r = saveRange.cloneRange();
 
             if(sc.nodeName=='SPAN'){
+              //r.setStartAfter(sc);
+              r.setStart(span.firstChild,0);
+              r.setEnd(span,0);
+              console.log(span.firstChild);
               r.insertNode(span);
-              r.setStartAfter(sc);
             }else{
+              r.setStart(span.firstChild,0);
+              r.setEnd(span.firstChild,0);
+              //r.setStartAfter(sc);
+              console.log(span.firstChild);
               r.insertNode(span);
-              r.setStartAfter(span);
             }
 
           }
@@ -348,7 +357,8 @@ class gtTextEditorController {
 
 
   insertTextAtCursor(className,text,afterNode, deleteContent) {
-    let sel, range, _deleteContent ;
+
+    let sel, range, _deleteContent;
 
     _deleteContent = typeof deleteContent != 'undefined' ? deleteContent : true;
 
@@ -356,7 +366,7 @@ class gtTextEditorController {
     if (sel.getRangeAt && sel.rangeCount) {
 
       range = sel.getRangeAt(0);
-
+//console.log(_deleteContent);
       if(_deleteContent)
         range.deleteContents();
 
@@ -403,21 +413,21 @@ class gtTextEditorController {
   }
 
   restoreSelection(range,deleteContent) {
-  if (range) {
-    deleteContent = typeof deleteContent == 'undefined' ? false : deleteContent;
-    if (window.getSelection) {
-      let sel = window.getSelection();
+    if (range) {
+      deleteContent = typeof deleteContent == 'undefined' ? false : deleteContent;
+      if (window.getSelection) {
+        let sel = window.getSelection();
 
-      if(deleteContent){
-        range.deleteContents();
+        if(deleteContent){
+          range.deleteContents();
+        }
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else if (document.selection && range.select) {
+        range.select();
       }
-      sel.removeAllRanges();
-      sel.addRange(range);
-    } else if (document.selection && range.select) {
-      range.select();
     }
   }
-}
 
   saveSelection() {
   if (window.getSelection) {
