@@ -1,5 +1,3 @@
-window.createNewLine = false;
-
 class gtTextEditorController {
 
   // @ngInject
@@ -37,8 +35,8 @@ class gtTextEditorController {
     r.deleteContents();
     r.insertNode(span);
 
-    r.setStart(nodeToStart ? nodeToStart : span.firstChild,1);
-    r.setEnd(nodeToStart ? nodeToStart : span.firstChild,1);
+    r.setStart(nodeToStart ? nodeToStart : span.firstChild,0);
+    r.setEnd(nodeToStart ? nodeToStart : span.firstChild,0);
 
     s.addRange(r);
     return r;
@@ -63,7 +61,7 @@ class gtTextEditorController {
     return this.hasClass(nodeToCheckIsBr,'line');
   }
 
-  createNewTextWrapper(style,text,startOffset,endOffset){
+  createNewTextWrapper(style,text){
     let s = window.getSelection();
     let r = s.getRangeAt(0);
     let sc = r.startContainer;
@@ -72,16 +70,14 @@ class gtTextEditorController {
     let span = this.createNewNode('span',style,defaultText);
 
     span.className = 'line';
-
     span.id = ++this.spanCounter;
 
     r.insertNode(span);
+    r.setStart(span,0);
+    r.setEnd(span,0);
 
-    r.setStart(span,startOffset?startOffset:0);
-    r.setEnd(span,endOffset?endOffset:0);
-
-    r = r.cloneRange();
     s.removeAllRanges();
+    r = r.cloneRange();
     s.addRange(r);
 
     return r;
@@ -96,67 +92,35 @@ class gtTextEditorController {
   }
 
 
-  /**
-   *
-   * @param {(object|null)} style
-   * @param {(string|null)} text
-   * @param {(boolean|null)} deleteContent
-   * @param {(boolean|null)} setSelectionBefore
-   * @param {(boolean|null)} forceNewLine
-   * @returns {Undefined|Range}
-   */
-  promiseSelectionInLineWrapper(style,text, deleteContent,setSelectionBefore,forceNewLine){
-    /**
-     *
-     * @type {Selection}
-     */
+  promiseSelectionInLineWrapper(style,text,deleteContent,setSelectionBefore,createNewLineIfSelectionInline){
     let s = window.getSelection();
-    /**
-     *
-     * @type {Range}
-     */
     let r = s.getRangeAt(0);
-    /**
-     *
-     * @type {Node}
-     */
     let sc = r.startContainer;
-    /**
-     *
-     * @type {Node}
-     */
     let ec = r.endContainer;
-    /**
-     *
-     * @type {boolean}
-     */
-    let needToCreateNewLine;
-    /**
-     *
-     * @type {(Undefined|Range)}
-     */
     let newLine;
 
     let selectionNode = r.startContainer.nodeName == 'SPAN' ? r.startContainer : r.startContainer.parentNode;
     setSelectionBefore  = typeof setSelectionBefore != 'undefined' ? setSelectionBefore : false;
+    let createNewLine = !this.nodeHasLine(selectionNode) ||  createNewLineIfSelectionInline;
 
     if(!this.nodeHasLine(selectionNode)){
-      needToCreateNewLine=true;
       if(this.nodeHasBr(selectionNode) && setSelectionBefore==false){
         this.setSelectionAfter(selectionNode);
       }else{
         this.setSelectionBefore(selectionNode);
       }
-
     }
 
-    if(this.nodeHasLine(selectionNode) && forceNewLine){
-      this.setSelectionAfter(selectionNode);
-    }
+    if(createNewLine){
+      if(this.nodeHasLine(selectionNode)){
+        if(setSelectionBefore){
+          this.setSelectionBefore(selectionNode);
+        }else{
+          this.setSelectionAfter(selectionNode);
+        }
+      }
 
-    if(needToCreateNewLine || forceNewLine){
-      newLine = this.createNewTextWrapper(style,text, text?0:1,text?0:1);
-      //this.restoreSelection(newLine);
+      newLine = this.createNewTextWrapper(style,text);
     }
 
     return newLine;
@@ -200,96 +164,52 @@ class gtTextEditorController {
   }
 
   isNeedToPartLine(r){
-    return this.selectionIsInLine(r) && r.startOffset>=0 && r.startContainer.nodeValue!="\u200B";
+    return this.selectionIsInLine(r) && r.startOffset>=0 && r.startContainer.data!='';
   }
 
-
-  /**
-   *
-   * @param startOffset
-   * @param endOffset
-   * @param createBrAfterFirstNode
-   * @param createNewTextNodeAfterFirstNode
-   * @param range
-   * @returns {{first: Range, last: (Range|undefined), br: (Range|undefined), newLine: (Range|undefined)}}
-     */
-  partRangeByOffset(startOffset,endOffset,createBrAfterFirstNode,createNewTextNodeAfterFirstNode,range){
-
-    /**
-     *
-     * @type {Selection}
-     */
+  partRangeByOffset(range,startOffset,endOffset,createBrAfterFirstNode,createNewLineAfterFirstNode){
     let s = range ? null : window.getSelection();
-    /**
-     *
-     * @type {Range}
-     */
     let r = range ? range : s.getRangeAt(0);
-    /**
-     *
-     * @type {Node}
-     */
     let sc = r.startContainer;
-    /**
-     *
-     * @type {Node}
-     */
     let ec = r.endContainer;
-    /**
-     *
-     * @type {String}
-     */
     let endText;
-    /**
-     *
-     * @type {String}
-     */
     let startText;
-    /**
-     *
-     * @type {Range|undefined}
-     */
-    let br;
-    /**
-     *
-     * @type {Range|undefined}
-     */
-    let newLine;
-    /**
-     *
-     * @type {Range|undefined}
-     */
-    let last;
-
 
     startText = sc.nodeValue.toString().substr(0,startOffset);
     endText = sc.nodeValue.toString().substr(endOffset,sc.length);
     sc.nodeValue = startText;
 
-    if(createBrAfterFirstNode){
-      this.prepareBeforeAddBR();
-      br = this.createBR();
-    }
-
-    if(createNewTextNodeAfterFirstNode){
-      newLine = this.promiseSelectionInLineWrapper(null,null,null,false,true);
-    }
-
-    last = this.promiseSelectionInLineWrapper(null,endText,null,false,createNewLine);
-
-    if(newLine){
-      this.restoreSelection(newLine);
-    }
 
     return{
-      first:r,
-      last:last,
-      br:br,
-      newLine:newLine
+      firstRange:r,
+      lastRange:null,
+      brRange:null,
+      newLine:null
     }
 
   }
 
+
+  partRangeByOffset(startOffset,endOffset){
+    let s = window.getSelection();
+    let r = s.getRangeAt(0);
+    let sc = r.startContainer;
+    let ec = r.endContainer;
+    let endText;
+    let startText;
+
+    startText = sc.nodeValue.toString().substr(0,startOffset);
+    endText = sc.nodeValue.toString().substr(endOffset,sc.length);
+    sc.nodeValue = startText;
+
+    let selectionNode = r.startContainer.nodeName == 'SPAN' ? r.startContainer : r.startContainer.parentNode;
+    let last = this.promiseSelectionInLineWrapper(null,endText,null,null,true);
+
+    return {
+      start:r,
+      end:last
+    }
+  }
 
   $postLink(){
     //this.$document[0].addEventListener('selectionchange', this.cb.bind(this));
@@ -313,13 +233,21 @@ class gtTextEditorController {
 
       // Enter key
       if(event.keyCode == 13){
-        if(this.isNeedToPartLine(r) && r.startOffset != 0 && typeof sc.data != 'undefined'){
-          this.partRangeByOffset(r.startOffset, r.endOffset,true,createNewLine);
+
+        if(this.isNeedToPartLine(r) && r.startOffset != 0){
+          let lastRange = this.saveSelection();
+          let ranges = this.partRangeByOffset(r.startOffset, r.endOffset,false,true);
+          this.restoreSelection(ranges.first);
+
+          this.prepareBeforeAddBR(true);
+          let brRange = this.createBR();
+          console.log(ranges.last);
+          this.restoreSelection(ranges.last,0,0);
         }else{
-          let setSelectionBefore = (r.startOffset <= 1 && r.endOffset <= 1) || typeof sc.data != 'undefined';
+          let lastRange = this.saveSelection();
+          let setSelectionBefore = r.startOffset <= 1 && r.endOffset <= 1;
           let node = this.prepareBeforeAddBR(setSelectionBefore);
-          this.createBR(node);
-          this.restoreSelection(r);
+          this.restoreSelection(lastRange);
         }
 
         //s= window.getSelection(); r = s.getRangeAt(0);
@@ -329,7 +257,7 @@ class gtTextEditorController {
         return false;
       }
 
-      this.promiseSelectionInLineWrapper(null,null,null,null,createNewLine);
+      this.promiseSelectionInLineWrapper(null,null,null,true);
 
     });
 
@@ -350,28 +278,23 @@ class gtTextEditorController {
   toggleBold(){}
   toggleItalic(){}
 
-
   restoreSelection(range,deleteContent,startOffset,endOffset) {
     if (range) {
       deleteContent = typeof deleteContent == 'undefined' ? false : deleteContent;
-      if (window.getSelection) {
-        let sel = window.getSelection();
+      let sel = window.getSelection();
 
-        if(deleteContent){
-          range.deleteContents();
-        }
-
-        if(startOffset){
-          range.setStart(range.startContainer,startOffset);
-        }
-        if(endOffset){
-          range.setEnd(range.startContainer,endOffset);
-        }
-        sel.removeAllRanges();
-        sel.addRange(range);
-      } else if (document.selection && range.select) {
-        range.select();
+      if(deleteContent){
+        range.deleteContents();
       }
+
+      if(startOffset >= 0){
+        range.setStart(range.startContainer,startOffset);
+      }
+      if(endOffset >= 0){
+        range.setEnd(range.startContainer,endOffset);
+      }
+      sel.removeAllRanges();
+      sel.addRange(range);
     }
   }
 
