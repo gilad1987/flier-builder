@@ -229,7 +229,7 @@ class gtTextEditorController {
    * @param createBrAfterFirstNode
    * @param createNewTextNodeAfterFirstNode
    * @param range
-   * @returns {{first: Range, last: (Range|undefined), br: (Range|undefined), newLine: (Range|undefined)}}
+   * @returns {{first: Range, last: (Range|Null), br: (Range|Null), newLine: (Range|Null)}}
      */
   partRangeByOffset(startOffset,endOffset,createBrAfterFirstNode,createNewTextNodeAfterFirstNode,range){
 
@@ -267,17 +267,17 @@ class gtTextEditorController {
      *
      * @type {Range|undefined}
      */
-    let br;
+    let br = null;
     /**
      *
      * @type {Range|undefined}
      */
-    let newLine;
+    let newLine = null;
     /**
      *
-     * @type {Range|undefined}
+     * @type {Range|null}
      */
-    let last;
+    let last = null;
 
 
     startText = sc.nodeValue.toString().substr(0,startOffset);
@@ -413,3 +413,5 @@ export const gtTextEditor = {
   controller: gtTextEditorController,
   controllerAs: 'gtTextEditor'
 };
+
+
