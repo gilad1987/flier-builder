@@ -26,10 +26,10 @@ class gtTextEditorController {
     let sc = r.startContainer;
     let ec = r.endContainer;
     let br = document.createElement('br');
-    let span = this.createNewNode('span','br',"\u200B");
+    let span = this.createNewNode('span','br',"");
 
     span.className = 'br';
-    span.id = ++this.brCounter;
+    //span.id = ++this.brCounter;
     span.appendChild(br);
     s.removeAllRanges();
 
@@ -37,8 +37,8 @@ class gtTextEditorController {
     r.deleteContents();
     r.insertNode(span);
 
-    r.setStart(nodeToStart ? nodeToStart : span.firstChild,1);
-    r.setEnd(nodeToStart ? nodeToStart : span.firstChild,1);
+    r.setStart(nodeToStart ? nodeToStart : span.firstChild,0);
+    r.setEnd(nodeToStart ? nodeToStart : span.firstChild,0);
 
     s.addRange(r);
     return r;
@@ -59,8 +59,8 @@ class gtTextEditorController {
   }
 
   selectionIsInLine(r){
-    let nodeToCheckIsBr = r.startContainer.nodeName == 'SPAN' ? r.startContainer : r.startContainer.parentNode;
-    return this.hasClass(nodeToCheckIsBr,'line');
+    let nodeToCheckIsBr = this.getParentNodeByRange(r);
+    return this.nodeIsLine(nodeToCheckIsBr);
   }
 
   createNewTextWrapper(style,text,startOffset,endOffset){
@@ -71,15 +71,16 @@ class gtTextEditorController {
     let defaultText = text ? text : "\u200B";
     let span = this.createNewNode('span',style,defaultText);
 
-    span.className = 'line';
+    span.className = 'wordwrapper';
 
-    span.id = ++this.spanCounter;
+    //span.id = ++this.spanCounter;
 
     r.insertNode(span);
 
     r.setStart(span,startOffset?startOffset:0);
     r.setEnd(span,endOffset?endOffset:0);
 
+    r.deleteContents();
     r = r.cloneRange();
     s.removeAllRanges();
     s.addRange(r);
@@ -87,12 +88,23 @@ class gtTextEditorController {
     return r;
   }
 
-  nodeHasBr(node){
+  nodeIsBr(node){
     return this.hasClass(node,'br');
   }
 
-  nodeHasLine(node){
-    return node && this.hasClass(node,'line');
+  nodeIsLine(node){
+    return node && this.hasClass(node,'wordwrapper');
+  }
+
+
+  /**
+   *
+   * @param range {Range}
+   * @returns {Null|Node}
+     */
+  getParentNodeByRange(range){
+    if(!range) return null;
+    return range.startContainer.nodeName == 'SPAN' ? range.startContainer : range.startContainer.parentNode;
   }
 
 
@@ -137,24 +149,24 @@ class gtTextEditorController {
      */
     let newLine;
 
-    let selectionNode = r.startContainer.nodeName == 'SPAN' ? r.startContainer : r.startContainer.parentNode;
+    let selectionNode = this.getParentNodeByRange(r);
     setSelectionBefore  = typeof setSelectionBefore != 'undefined' ? setSelectionBefore : false;
 
-    if(!this.nodeHasLine(selectionNode)){
+    if(!this.nodeIsLine(selectionNode)){
       needToCreateNewLine=true;
-      if(this.nodeHasBr(selectionNode) && setSelectionBefore==false){
+      if(this.nodeIsBr(selectionNode) && setSelectionBefore==false){
         this.setSelectionAfter(selectionNode);
       }else{
         this.setSelectionBefore(selectionNode);
       }
-
     }
 
-    if(this.nodeHasLine(selectionNode) && forceNewLine){
+    if(this.nodeIsLine(selectionNode) && forceNewLine){
       this.setSelectionAfter(selectionNode);
     }
 
     if(needToCreateNewLine || forceNewLine){
+      //#TODO when selection in BR and need create new line, need to check if startContainer!= endContainer true remove the nodes between with startOffset to endOffset
       newLine = this.createNewTextWrapper(style,text, text?0:1,text?0:1);
       //this.restoreSelection(newLine);
     }
@@ -189,12 +201,18 @@ class gtTextEditorController {
   hasClass(node,className){
     return node && node.classList && node.classList.contains(className);
   }
+  
+  addClass(node,className){
+    if(!node) return;
+    node.classList.add(className);
+    return node;
+  }
 
   hasStyle(node,key,value){
     return node.style[key] == value;
   }
 
-  setStyle(node,key,value){
+  addStyle(node,key,value){
     node.style[key] = value;
     return node;
   }
@@ -301,7 +319,7 @@ class gtTextEditorController {
        * 37 arrow left
        * 39 arrow right
        */
-      if(event.keyCode==40 || event.keyCode==38 || event.keyCode==37 || event.keyCode==39){
+      if(event.keyCode==8 || event.keyCode==40 || event.keyCode==38 || event.keyCode==37 || event.keyCode==39){
         return;
       }
 
@@ -329,7 +347,8 @@ class gtTextEditorController {
         return false;
       }
 
-      this.promiseSelectionInLineWrapper(null,null,null,null,createNewLine);
+
+        this.promiseSelectionInLineWrapper(null,null,null,null,createNewLine);
 
     });
 
