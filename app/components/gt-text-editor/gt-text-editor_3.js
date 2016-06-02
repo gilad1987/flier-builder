@@ -110,11 +110,11 @@ class gtTextEditorController {
 
   /**
    *
-   * @param {(object|null)} style
-   * @param {(string|null)} text
-   * @param {(boolean|null)} deleteContent
-   * @param {(boolean|null)} setSelectionBefore
-   * @param {(boolean|null)} forceNewLine
+   * @param {(object|null)}  [style]
+   * @param {(string|null)}  [text]
+   * @param {(boolean|null)}  [deleteContent]
+   * @param {(boolean|null)}  [setSelectionBefore]
+   * @param {(boolean|null)}  [forceNewLine]
    * @returns {Undefined|Range}
    */
   promiseSelectionInLineWrapper(style,text, deleteContent,setSelectionBefore,forceNewLine){
@@ -152,6 +152,7 @@ class gtTextEditorController {
     let selectionNode = this.getParentNodeByRange(r);
     setSelectionBefore  = typeof setSelectionBefore != 'undefined' ? setSelectionBefore : false;
 
+      //#TODO before change selection after|before need to check if the contentEditable not empty (when init) if empty not need to change selection.
     if(!this.nodeIsLine(selectionNode)){
       needToCreateNewLine=true;
       if(this.nodeIsBr(selectionNode) && setSelectionBefore==false){
@@ -360,6 +361,7 @@ class gtTextEditorController {
       //console.log('init');
       this.contentElement.focus();
       this.createNewTextWrapper();
+      //this.promiseSelectionInLineWrapper();
     }
   }
 
