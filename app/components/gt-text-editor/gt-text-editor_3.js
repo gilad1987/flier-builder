@@ -162,6 +162,7 @@ class gtTextEditorController {
       }
     }
 
+      //#TODO check if selection in part of word == true & need to create new word => need to part word and before last need to insert new line
     if(this.nodeIsLine(selectionNode) && forceNewLine){
       this.setSelectionAfter(selectionNode);
     }
