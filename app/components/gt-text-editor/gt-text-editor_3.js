@@ -115,7 +115,7 @@ class gtTextEditorController {
    * @param {(boolean|null)}  [deleteContent]
    * @param {(boolean|null)}  [setSelectionBefore]
    * @param {(boolean|null)}  [forceNewLine]
-   * @returns {Undefined|Range}
+   * @returns {null|Range}
    */
   promiseSelectionInLineWrapper(style,text, deleteContent,setSelectionBefore,forceNewLine){
     /**
@@ -145,9 +145,9 @@ class gtTextEditorController {
     let needToCreateNewLine;
     /**
      *
-     * @type {(Undefined|Range)}
+     * @type {(null|Range)}
      */
-    let newLine;
+    let newLine = null;
 
     let selectionNode = this.getParentNodeByRange(r);
     setSelectionBefore  = typeof setSelectionBefore != 'undefined' ? setSelectionBefore : false;
@@ -161,6 +161,8 @@ class gtTextEditorController {
         this.setSelectionBefore(selectionNode);
       }
     }
+
+
 
       //#TODO check if selection in part of word == true & need to create new word => need to part word and before last need to insert new line
     if(this.nodeIsLine(selectionNode) && forceNewLine){
@@ -203,7 +205,7 @@ class gtTextEditorController {
   hasClass(node,className){
     return node && node.classList && node.classList.contains(className);
   }
-  
+
   addClass(node,className){
     if(!node) return;
     node.classList.add(className);
@@ -349,6 +351,12 @@ class gtTextEditorController {
         return false;
       }
 
+        //#TODO wrap in function
+        if(sc.length > 0 && sc.length > r.endOffset && window.createNewLine){
+            this.partRangeByOffset(r.startOffset, r.endOffset,false,true);
+            window.createNewLine=false;
+        }
+
 
         this.promiseSelectionInLineWrapper(null,null,null,null,createNewLine);
 
@@ -365,6 +373,7 @@ class gtTextEditorController {
       //this.promiseSelectionInLineWrapper();
     }
   }
+
 
   $onDestroy(){}
 
@@ -416,5 +425,3 @@ export const gtTextEditor = {
   controller: gtTextEditorController,
   controllerAs: 'gtTextEditor'
 };
-
-
