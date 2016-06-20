@@ -8,20 +8,20 @@
             </li>
 
             <li>
-                <a href="#2" class="active">
+                <a ui-sref="create.upload-image" class="active" ng-click="$ctrl.setStateUploadYouImage()">
                     <i class="fa fa-cloud-upload" aria-hidden="true"></i>
                     Upload your image
                 </a>
             </li>
 
             <li>
-                <a href="#3">
+                <a ui-sref="create.insert-your-text" ng-class="{'active': ''}" ng-click="$ctrl.setStateInsertYourText()">
                     <i class="fa fa-text-width" aria-hidden="true"></i>
                     Update your text
                 </a>
             </li>
             <li>
-                <a href="#4">
+                <a ui-sref="create.export" ng-class="{'active': ''}" ng-click="$ctrl.setStateExport()">
                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                     Export to PDF
                 </a>
@@ -30,9 +30,6 @@
         </ul>
     </div>
 
-
-    <div class="upload-image">
-
-    </div>
+    <ui-view></ui-view>
 
 </div>

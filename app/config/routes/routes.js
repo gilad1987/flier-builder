@@ -1,3 +1,6 @@
+import { exportRoutes } from './export';
+import { insertYourTextRoutes } from './insert-your-text';
+import { uploadImageRoutes } from './upload-image';
 import { createRoutes } from './create';
 import angular from 'angular';
 import 'angular-ui-router';
@@ -10,6 +13,9 @@ const defaultRoute = /* @ngInject */ ($urlRouterProvider) => {
 };
 
 export default angular.module('FlierBuilder.routes', ['ui.router'])
+  .config(exportRoutes)
+  .config(insertYourTextRoutes)
+  .config(uploadImageRoutes)
   .config(createRoutes)
   .config(defaultRoute)
   .config(homeRoutes)
