@@ -1,0 +1,86 @@
+$color-blue-primary : '#1486cc';
+$color-blue-primary-hover : '#33b1ff';
+$color-blue-primary-active : '#006eb2';
+
+$color-blue-secondary : '#144d9d';
+$color-blue-secondary-hover : '#296dcc';
+$color-blue-secondary-active : '#002a66';
+
+$color-orange-primary : '#FF6D15';
+$color-orange-primary-hover : '#ff8940';
+$color-orange-primary-active : '#e56312';
+
+$color-light-blue : '#9ed6fa';
+$color-light-blue-hover : '#a8dafb';
+$color-light-blue-active : '#8ec0e1';
+
+$color-cool-gray : '#c2cfd6';
+$color-cool-gray-hover : '#c8d4da';
+$color-cool-gray-active : '#aebac0';
+
+$color-pale-blue : '#dfebed';
+$color-pale-blue-hover : '#e2edef';
+$color-pale-blue-active : '#c8d3d5';
+
+$color-primary-black : '#222';
+$color-dark-gray : '#444';
+$color-medium-gray : '#888';
+$color-light-gray : '#d9d9d9';
+$color-very-light-gray : '#e9e9e9';
+$color-light : '#F4F5F8';
+$color-sun-flower : '#ffc120';
+$color-amethyst : '#94459a';
+$color-white: '#fff';
+$color-button-text-disabled:'#666';
+$color-button-background-disabled:'#e5e5e6';
+$color-red:'#f34235';
+$color-switch-button:'#f1f1f1';
+
+$color-social-facebook:'#3b5998';
+$color-social-twitter:'#55ACEE';
+$color-social-googlePlus:'#dd4b39';
+
+$color-switch-button-blue-checked:'rgb(142, 197, 231)';
+$color-switch-button-orange-checked:'rgb(255, 177, 131)';
+
+$button_colors: (
+        blue-primary:($color-blue-primary,$color-blue-primary-hover,$color-blue-primary-active),
+        blue-secondary:($color-blue-secondary,$color-blue-secondary-hover,$color-blue-secondary-active),
+        orange-primary:($color-orange-primary,$color-orange-primary-hover,$color-orange-primary-active),
+        light-blue:($color-light-blue,$color-light-blue-hover,$color-light-blue-active),
+        cool-gray:($color-cool-gray,$color-cool-gray-hover,$color-cool-gray-active),
+        pale-blue:($color-pale-blue,$color-pale-blue-hover,$color-pale-blue-active),
+        primary-black:($color-primary-black),
+        dark-gray:($color-dark-gray),
+        medium-gray:($color-medium-gray),
+        light-gray:($color-light-gray),
+        very-light-gray:($color-very-light-gray),
+        light:($color-light),
+        sun-flower:($color-sun-flower),
+        amethyst:($color-amethyst),
+);
+
+$text_colors:(
+        blue-primary:($color-blue-primary),
+        blue-secondary:($color-blue-secondary),
+        orange-primary:($color-orange-primary),
+        light-blue:($color-light-blue),
+        cool-gray:($color-cool-gray),
+        pale-blue:($color-pale-blue),
+        primary-black:($color-primary-black),
+        dark-gray:($color-dark-gray),
+        medium-gray:($color-medium-gray),
+        light-gray:($color-light-gray),
+        very-light-gray:($color-very-light-gray),
+        light:($color-light),
+        sun-flower:($color-sun-flower),
+        amethyst:($color-amethyst),
+);
+
+
+
+
+
+
+
+

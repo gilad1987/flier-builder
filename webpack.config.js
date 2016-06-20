@@ -132,14 +132,14 @@ const config = {
 if (process.env.NODE_ENV === 'development') {
   config.devtool = '#inline-source-map';
 
-  config.plugins.push(
-      new ExtractTextPlugin("app/assets/stylesheets/main.css",{
-        allChunks: true
-      })
-  );
-  config.module.loaders[1].loaders.push(
-      ExtractTextPlugin.extract('css!sass')
-  );
+  // config.plugins.push(
+  //     new ExtractTextPlugin("app/assets/stylesheets/main.css",{
+  //       allChunks: true
+  //     })
+  // );
+  // config.module.loaders[1].loaders.push(
+  //     ExtractTextPlugin.extract('css!sass')
+  // );
 }
 
 if (process.env.NODE_ENV !== 'test') {

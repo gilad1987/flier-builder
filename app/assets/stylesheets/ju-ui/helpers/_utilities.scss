@@ -1,0 +1,25 @@
+@import "../base/colors";
+@import "mixin";
+
+$social-button-padding:24;
+
+.u-Radios-width5{border-radius: 5px;}
+.u-Radios-width45{border-radius: 45px;}
+.u-block{display: block;}
+.u-inlineBlock{display: inline-block;}
+.u-hidden {  display: none !important;  }
+.u-linkDecoration{}
+
+// padding
+.u-ignorePaddingTop{padding-top:0 !important;}
+
+// Background colors
+@include createUtilityBackgroundColors($button_colors);
+
+// text colors
+@include createUtilityTextColors($text_colors);
+
+// Social background
+.u-SocialBg-facebook{background-color: #{$color-social-facebook};}
+.u-SocialBg-twitter{background-color: #{$color-social-twitter};}
+[class*="u-SocialBg-"]{text-align: left !important; text-transform: none !important; padding:0 #{$social-button-padding}px; width:auto !important; font-weight: 400 !important;}

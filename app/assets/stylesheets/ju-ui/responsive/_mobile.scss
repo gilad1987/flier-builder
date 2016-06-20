@@ -1,0 +1,5 @@
+@import "../helpers/variables";
+
+@media (max-width: #{$mobile} + 'px') {
+  .u-hidden-xs{display: none;}
+}

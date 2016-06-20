@@ -1,0 +1,11 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900);
+
+body{}
+*{box-sizing: border-box}
+button{outline: none; padding:0;}
+a{display: inline-block; text-decoration: none;}
+
+.is-animation,
+.is-animation:after,
+.is-animation:before{  transition: all 150ms ease-out 50ms ;  }
+[class*=button],[class*=Button],[type*=Button]{cursor:pointer;}

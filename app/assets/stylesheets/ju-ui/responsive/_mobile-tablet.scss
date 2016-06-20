@@ -1,0 +1,5 @@
+@import "../helpers/variables";
+
+@media (min-width: #{$mobile} + 'px' ) and (max-width: #{$tablet} + 'px') {
+  .u-hidden-ms{display: none;}
+}

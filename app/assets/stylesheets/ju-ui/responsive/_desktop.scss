@@ -1,0 +1,5 @@
+@import "../helpers/variables";
+
+@media (min-width: #{$desktop} + 'px') {
+  .u-hidden-lg{display: none;}
+}

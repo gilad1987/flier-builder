@@ -1,0 +1,283 @@
+@import "../helpers/variables";
+@import "../base/colors";
+
+$input-padding:22;
+$input-radius:4;
+$input-height:40;
+$input-time-animation:100; // in ms
+$error-class-name:'error-message';
+
+$error-massage-padding:25; // only Radio & Checkbox button
+
+$input-radio-margin:10;
+$company-class-prefix:'ju';
+
+input{outline: none}
+
+.#{$company-class-prefix}-Label{
+  margin-left:#{$ju-gutter}px;
+}
+
+.#{$company-class-prefix}-InputWrapper{
+  position: relative;
+  direction: ltr;
+  margin: #{$ju-gutter/2}px 0;
+
+
+
+
+  &:first-child{margin-top:0;}
+  &.error{
+    .#{$error-class-name}{
+      display: block;
+    }
+    .Input{
+      border-color: #{$color-red};
+    }
+  }
+  .#{$error-class-name}{
+    padding-left:#{$input-padding}px;
+    display: none;
+    color:#{$color-red};
+    font-size:#{$font-size-input-error}px;
+    padding-right: 11px;
+    margin-top:8px;
+    i{
+      float:right;
+    }
+  }
+
+  input[type=checkbox] ~ .#{$error-class-name},
+  input[type=radio] ~ .#{$error-class-name}{padding-left:#{20+($ju-gutter)}px};
+
+  [class*="radio"],
+  [class*="checkbox"]{
+    position: absolute;left: -9999px;
+
+    + label{
+      position: relative;
+      padding-left: 20px;
+      cursor: pointer;
+      width: auto;
+      line-height: initial;
+      display: inline-block;
+
+      span:not(.icon-bg){
+        display: inline-block;
+        margin-left:#{$ju-gutter}px;
+      }
+    }
+    + label:before,
+    + label:after {  content: ''; top:3px; position: absolute;  left:0;width: 20px;height: 20px;
+      border: 2px solid;  background: #f8f8f8;
+      padding: 2px;display: block;box-sizing: border-box;
+      -webkit-transition: all 300ms cubic-bezier(0, 0.9, 0.58, 1) 200ms;
+      -moz-transition: all 300ms cubic-bezier(0, 0.9, 0.58, 1) 200ms;
+      -o-transition: all 300ms cubic-bezier(0, 0.9, 0.58, 1) 200ms;
+      transition: all 200ms cubic-bezier(0, 0.9, 0.58, 1);
+    }
+  }
+
+  .#{$company-class-prefix}-Input{
+    font-size:#{$font-size-input}px;
+    color:#{$color-primary-black};
+    animation-duration: #{$input-time-animation}ms;
+    animation-delay: 0s;
+
+    //&[type="radio"],
+    //&[type="checkbox"]{
+    //  position: absolute;left: -9999px;
+    //}
+
+
+    /** ----------checkbox input -------------- **/
+    &--checkbox + label:before {   border-radius: 3px;  /*box-shadow: inset 0 1px 3px rgba(0,0,0,.3);*/ border-color:#{$color-medium-gray};}
+    &--checkbox + label:after{
+      border-top:none;
+      border-left:none;
+      top: 7px;
+      left: 7px;
+      font-size: 18px;
+      line-height: 0.8;
+      color: #09ad7e;
+      width: 5px;
+      height: 10px;
+      border-right: 2px solid #444445;
+      border-bottom: 2px solid #444445;
+      opacity:0;
+      background:transparent;
+    }
+    &--checkbox {
+      + label .icon-bg{border-radius:#{$input-radius}px;width:20px; height:20px; display: inline-block; position:absolute;top:3px;  left:0; transform:scale(0);     background-color: #1486cc; transition: all 300ms cubic-bezier(0, 0.9, 0.58, 1)}
+      &:checked {
+        + label:before{ border-color:#{$color-blue-primary}; }
+        + label:after { border-color:white; transform: rotate(35deg); opacity:1; color:white; transition: all 300ms cubic-bezier(0, 0.9, 0.58, 1) 300ms;}
+        + label .icon-bg{transform:scale(1);}
+      }
+    }
+
+    /** ---------- radio input  -------------- **/
+    &--radio + label:before{border-color:#{$color-medium-gray}; width:20px; height:20px;}
+    &--radio + label:before,
+    &--radio + label:after {border-radius: 40px;}
+    &--radio + label:after{border-color:#{$color-medium-gray}; background: #{$color-medium-gray};  transform: scale(0); opacity: 0;width: 10px;height: 10px;top: 8px;left: 5px; border-radius: 40px; border:none;}
+    &--radio  + label:hover:after{transform: scale(.7);opacity: .5;}
+    &--radio:checked + label:hover:after,
+    &--radio:checked + label:after{border-color:#{$color-blue-primary}; background-color: #{$color-blue-primary};transform: scale(1);opacity: 1;}
+    &--radio:checked + label:before{border-color: #{$color-blue-primary};}
+
+    /** ----------text input  -------------- **/
+    &--text{
+      padding:0 #{$input-padding}px;
+      height:#{$input-height}px;
+      line-height: #{$input-height}px;
+      border:1px solid #{$color-light-gray};
+      display: block;
+
+      border-radius: #{$input-radius}px;
+      width:100%;
+      &:not(.is-disabled):not(:focus):hover{
+        border-color: #{$color-medium-gray};
+      }
+      &:focus,&:active{
+        border-color: #{$color-blue-primary};
+      }
+      ~i{position:absolute; right: #{$ju-gutter - 8}px;top: 13px; color:#{$color-medium-gray}}
+    }
+
+    /** ---------- switch button  -------------- **/
+    &--blue{
+      &:checked{
+        + label{
+          .switch-icon{
+            background-color: #{$color-switch-button-blue-checked};
+            &:after{    background-color: #{$color-blue-primary}}
+          }
+        }
+      }
+    }
+
+    &--orange{
+      &:checked{
+        + label{
+          .switch-icon{
+            background-color: #{$color-switch-button-orange-checked};
+            &:after{    background-color: #{$color-orange-primary}; }
+          }
+        }
+      }
+    }
+
+    &--switch{
+      position: absolute;left: -9999px;
+      + label{display: inline-block; padding:10px 0; cursor: pointer;}
+      + label .label{overflow: hidden;  display: inline-block;  margin-left: 7px;}
+      + label .switch-icon{float:left; position: relative; display: inline-block;      background-color: #{$color-light-gray};   width: 34px;  height: 14px;      border-radius: 8px;  cursor: -webkit-grab;  cursor: grab;}
+      + label .switch-icon:after{
+        content:'';
+        position: absolute;
+        margin: 0;
+        left: -4px;
+        top: -3px;
+        outline: 0;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);
+        transition: all .08s linear;
+        background-color:#{$color-switch-button};
+      }
+      &:checked + label .switch-icon:after{left:19px;}
+    }
+
+
+    .is-disabled{
+      border-color: #{$color-light-gray};
+      color: #{$color-light-gray};
+      &:focus,&:active,&:hover{border-color: #{$color-light-gray};}
+    }
+  }
+
+  &WithButton{
+
+    input{
+      width:100%; border-top-right-radius: 0 !important;border-bottom-right-radius: 0 !important; direction: ltr;
+    }
+    button{
+      height:100%;
+      width:100%;
+      color:white;
+      background-color:#{$color-medium-gray};
+      line-height: 38px;
+      font-size: 16px;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+      border: 1px solid #{$color-medium-gray};
+      padding:0 10px;
+      transition: background 200ms ease-out , color 200ms ease-out ;
+
+      &:hover{
+        background-color:white;
+        color:#{$color-medium-gray};
+      }
+    }
+
+    .input{overflow: hidden;}
+    .button{float:right; text-align:center;line-height: #{$input-height}px; }
+
+    &.is-icon{
+      button{
+        padding-right:20px;
+        padding-left:20px;
+        background-color:#{$color-light-gray};
+        color:#{$color-medium-gray};
+        overflow: hidden;
+        position: relative;
+        border:none;
+        transition: background 200ms ease-out;
+        line-height: 40px;
+
+        &:after{
+          content: "\F061";
+          display: inline-block;
+          font: normal normal normal 14px/1 FontAwesome;
+          font-size: inherit;
+          text-rendering: auto;
+          -webkit-font-smoothing: antialiased;
+          position: absolute;
+          top: 13px;
+          left: 20px;
+          transform: scale(0);
+          transition: transform 400ms ease-out 250ms;
+        }
+
+        i{
+          transition: all 500ms ease-out;
+          left:0;
+          opacity: 1;
+        }
+
+        &:hover{
+          background-color: #{$color-medium-gray};
+          color: #{$color-light-gray};
+
+          &:after{
+            transform: scale(1);
+          }
+
+          i{
+            position: relative;
+            left: 41px;
+          }
+        }
+      }
+    }
+  }
+
+  &--highlight{
+    padding:4px #{$ju-gutter}px 6px;
+    border: 1px solid #{$color-light-gray};
+    border-radius: 5px;
+  }
+}
+

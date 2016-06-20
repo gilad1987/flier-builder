@@ -1,0 +1,88 @@
+@import "colors";
+
+// Font weight
+$font-weight-thin:100;
+$font-weight-light:300;
+$font-weight-normal:400;
+$font-weight-medium:500;
+$font-weight-bold:700;
+$font-weight-ultra-bold:900;
+
+body{font-family: 'Roboto'; font-size:16px; font-weight:#{$font-weight-light}; color:#{$color-dark-gray}; line-height: 24px; }
+a{color:#{$color-dark-gray};}
+
+@mixin my-calculation-function(){
+  $temp:'';
+  @for $i from 1 through 4{
+    @if($i==1){
+      $temp:h#{$i};
+    }@else {
+      $temp:$temp+','+h#{$i};
+    }
+
+  }
+  #{$temp}{margin:10px 0;};
+}
+@include my-calculation-function();
+
+h1,h2{font-weight:#{$font-weight-light};}
+h1{font-size:40px; line-height: 40px;}
+h2{font-size:30px; line-height: 30px;}
+
+h3,h4{font-weight:#{$font-weight-normal};}
+h3{font-size:24px; line-height: 24px;}
+h4{font-size:20px; line-height: 20px;}
+
+//h4{margin:24px 0;}
+
+.Text{
+  font-size:16px;
+
+  &--Link,
+  &--SubHeader{
+    font-weight: #{$font-weight-medium};
+  }
+
+  &--Link{
+    &.is-underlineAnimation{
+      position:relative;
+      text-decoration: none;
+
+      &.is-UnderlineWhite{
+        &:after{
+          background:white;
+        }
+      }
+      &:after{
+        content:'';
+        position:absolute;
+        bottom:0;
+        left:0;
+        height:1px;
+        width:100%;
+        background:black;
+        transform: scale(0);
+      }
+      &:hover{
+        &:after{
+          transform: scale(1);
+        }
+      }
+
+    }
+  }
+
+  &--Small{
+    font-size:13px;
+    font-weight: #{$font-weight-medium};
+  }
+
+  &--Light{
+    color:#{$color-medium-gray};
+  }
+
+  &--Caption{
+    font-size:12px;
+  }
+}
+

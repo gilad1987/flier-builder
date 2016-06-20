@@ -1,7 +1,7 @@
+// import { GtState } from '../../assets/javascripts/GtEditorComponents/GtState';
 export class CreateController {
-
-  // @ngInject
-  constructor() {
-    this.message = 'Hello from CreateController';
-  }
+    // @ngInject
+    constructor($log) {
+        
+    }
 }

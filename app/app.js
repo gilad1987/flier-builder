@@ -2,6 +2,7 @@
 
 import angular from 'angular';
 
+import '../node_modules/font-awesome/scss/font-awesome.scss';
 import 'assets/stylesheets/application.scss';
 
 import Models     from 'models/models';

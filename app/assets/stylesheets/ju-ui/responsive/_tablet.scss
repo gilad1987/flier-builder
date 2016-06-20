@@ -1,0 +1,18 @@
+@import "../helpers/variables";
+
+@media (max-width: #{$tablet} + 'px') {
+  // Utils
+  .u-hidden-md{display: none;}
+
+  //Home page
+  section.feature-film{text-align: center;}
+  section.feature-film .film{text-align: left;}
+  section.feature-film .Button{display: inline-block; }
+  section.video-courses .Button {  margin-bottom: 27px;  }
+
+  .testimonial-and-who-are-we [class*='ju-col']{
+    border:none; padding-top: 40px;
+  }
+
+
+}

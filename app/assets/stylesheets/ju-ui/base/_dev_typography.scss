@@ -1,0 +1,19 @@
+.ColorBox{
+  height:162px;
+  border-radius: 4px;
+  div{height:50%;}
+  .hex{background:#f8f8f8; padding:10px; cursor: pointer;}
+
+}
+[class*="ju-col-lg-12of24"] {
+  [class*="ju-col-lg-12of24"]:nth-child(1) .hex:after{
+    display: block; margin-top:10px; padding:0;
+  }
+  [class*="ju-col-lg-12of24"]:not(:nth-child(1)) .hex:after{
+    padding-left:5px;
+  }
+  [class*="ju-col-lg-12of24"]:nth-child(2) .ColorBox ,
+  [class*="ju-col-lg-12of24"]:nth-child(3) .ColorBox {
+    height:70px; float:left; width:100%;
+  }
+}

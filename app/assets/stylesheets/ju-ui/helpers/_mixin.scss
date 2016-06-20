@@ -1,0 +1,86 @@
+@mixin makeGrid($grid_prefix) {
+  @each $size in 9,24{
+    @for $i from 1 through $size {
+        .ju-col-#{$grid_prefix}-#{$i}of#{$size} { width: $i*(100/$size)+%; }
+        .ju-col-#{$grid_prefix}-offset-left-#{$i}of#{$size} { margin-left: $i*(100/$size)+%; }
+        .ju-col-#{$grid_prefix}-offset-right-#{$i}of#{$size} { margin-right: $i*(100/$size)+%; }
+        .ju-col-#{$grid_prefix}-push-left-#{$i}of#{$size} { left: $i*(100/$size)+%; }
+        .ju-col-#{$grid_prefix}-pull-right-#{$i}of#{$size} { right: $i*(100/$size)+%; }
+
+    }
+  }
+}
+
+@function getItem($list,$key) {
+ @if(length($list) > ($key + (-1))){
+    @return nth($list, $key);
+  }
+  @return '';
+}
+
+@mixin addButtonColorSuffix($button_colors) {
+  @each $name, $colors in $button_colors{
+    &--#{$name}{
+      background-color: #{getItem($colors,1)};
+      &:hover {
+        background-color:#{getItem($colors,2)};
+      }
+      &:active {
+        background-color: #{getItem($colors,3)};
+      }
+      &:after{
+        background-color: #{getItem($colors,3)};
+      }
+      &.is-inverse{
+        background-color: white;
+        color:#{getItem($colors,1)};
+        border:1px solid #{getItem($colors,1)};
+        &:hover {
+          color:white;background-color:#{getItem($colors,1)};
+        }
+        &:after{
+          background-color: #{getItem($colors,2)};
+        }
+      }
+    }
+  }
+}
+
+@function generateBackgroundOrTextColorClassName($classPrefix, $colorName,$hasStates,$keyState){
+  $className: $classPrefix+$colorName;
+  $suffix:('','--hover','--active');
+  @if($hasStates && $keyState>1){
+    $className: $className + getItem($suffix,$keyState);
+  }
+  @return $className;
+}
+
+@mixin createUtilityBackgroundColors($button_colors) {
+  @each $name, $colors in $button_colors{
+    $len : length($colors);
+    @for $i from 1 through $len{
+      $className:generateBackgroundOrTextColorClassName('u-Background--',$name,$len>1,$i);
+      .#{$className}{
+        background-color: #{getItem($colors,$i)};
+        .hex{
+          &:after{
+            content:getItem($colors,$i); }
+        }
+      }
+    }
+  }
+}
+
+
+@mixin createUtilityTextColors($button_colors) {
+  @each $name, $colors in $button_colors{
+    $len : length($colors);
+    @for $i from 1 through $len{
+      $className:generateBackgroundOrTextColorClassName('u-TextColor--',$name,$len>1,$i);
+      .#{$className}{
+        color: #{getItem($colors,$i)};
+      }
+    }
+  }
+}
+
