@@ -56,6 +56,11 @@ export class GtEditorContent extends GtEditor{
 
         let selection = new GtSelection();
         document.addEventListener('selectionchange',(event) => {
+            let {startNode} = this.gtSelection.getStartAndEndNode();
+            let parentElement = startNode.closest('.content');
+            if(parentElement !== this.editorContentElement){
+                return false;
+            }
             this.onSelectionchange(event);
         });
 

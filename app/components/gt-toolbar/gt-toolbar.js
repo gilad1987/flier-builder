@@ -8,8 +8,7 @@ class gtToolbarController {
         let toolbarFunctionalityCollection = new GtFunctionalityCollection();
         toolbarFunctionalityCollection.addActionCollection(this.states);
         let toolbar = new GtToolbar(toolbarFunctionalityCollection,null,this.statesMetadata);
-        let editorParentElement = $element[0]; //[0].getElementsByClassName('Toolbar')[0];
-        toolbar.render(editorParentElement);
+        toolbar.render($element[0]);
     }
 }
 

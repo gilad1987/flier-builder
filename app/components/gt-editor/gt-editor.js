@@ -58,7 +58,6 @@ class gtEditorController {
             }
         };
 
-        console.log(this);
     }
 }
 

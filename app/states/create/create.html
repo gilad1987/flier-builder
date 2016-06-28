@@ -41,11 +41,12 @@
         <div id="canvas">
             <img src="{{$ctrl.backgroundImageFlier}}" >
             <gt-editor></gt-editor>
+            <gt-editor></gt-editor>
         </div>
     </div>
 
     <div ng-if="$ctrl.stateActive == 'export'"  class="export">
-<button ng-click="$ctrl.genPDF()">export</button>
+        <button ng-click="$ctrl.genPDF()">export</button>
     </div>
 
 </div>
