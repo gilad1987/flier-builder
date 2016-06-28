@@ -15,13 +15,13 @@
             </li>
 
             <li>
-                <a ng-class="{'active': $ctrl.checkStateIsActive('upload-image')}" ng-click="$ctrl.setStateInsertYourText()">
+                <a ng-class="{'active': $ctrl.checkStateInsertTextIsActive()}" ng-click="$ctrl.setStateInsertYourText()">
                     <i class="fa fa-text-width" aria-hidden="true"></i>
                     Update your text
                 </a>
             </li>
             <li>
-                <a ng-class="{'active': $ctrl.checkStateIsActive('export')}" ng-click="$ctrl.setStateExport()">
+                <a ng-class="{'active': $ctrl.checkStateExportIsActive()}" ng-click="$ctrl.setStateExport()">
                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                     Export to PDF
                 </a>
@@ -30,16 +30,22 @@
         </ul>
     </div>
 
-    <div ng-if="" class="upload-image">
+    <div ng-if="$ctrl.stateActive == 'upload-image'" class="upload-image">
+        <div class="FlierGallery">
+            <img ng-repeat="imageSrc in $ctrl.images" src="{{imageSrc}}" ng-click="$ctrl.setStateInsertYourText(imageSrc)">
+        </div>
 
     </div>
 
-    <div ng-if="" class="add-your-text">
-
+    <div ng-show="$ctrl.stateActive == 'insert-text'" class="add-your-text">
+        <div id="canvas">
+            <img src="{{$ctrl.backgroundImageFlier}}" >
+            <gt-editor></gt-editor>
+        </div>
     </div>
 
-    <div ng-if="" class="export">
-
+    <div ng-if="$ctrl.stateActive == 'export'"  class="export">
+<button ng-click="$ctrl.genPDF()">export</button>
     </div>
 
 </div>

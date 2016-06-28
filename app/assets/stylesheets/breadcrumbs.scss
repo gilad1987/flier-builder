@@ -8,6 +8,7 @@ body {
 }
 
 .crumbs {
+  margin:30px auto;
   text-align: center;
   h1{
     padding:0 0 30px;
@@ -22,6 +23,7 @@ body {
     display: inline-table;
     li {
       display: inline;
+      cursor: pointer;
 
       a {
         display: block;
@@ -86,13 +88,14 @@ body {
   display: none;
 }
 
-.crumbs ul li a:hover,
+//.crumbs ul li a:hover,
 .crumbs ul li a.active {
   background: #357DFD;
   color:#fff;
 }
-.crumbs ul li a.active:after,
-.crumbs ul li a:hover:after {
+//.crumbs ul li a:hover:after,
+.crumbs ul li a.active:after
+{
   border-left-color: #357DFD;
   color:#fff;
 }
