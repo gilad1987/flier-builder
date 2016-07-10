@@ -93,7 +93,7 @@ export class GtEditorContent extends GtEditor{
         this.wrapperElement.appendChild(frag);
 
         this.editorContentElement.innerHTML = '<p style="text-align: left;"><span style="font-weight: 300;">moshe</span><span style="font-weight: 300; text-decoration: underline;">​gilad</span><span style="font-weight: 700; text-decoration: underline;">​takoni</span></p><p style="text-align: left;"><span style="font-weight: 700; text-decoration: underline;">jermi</span><span style="font-weight: 700;">​as</span></p><p style="text-align: left;"><span style="font-weight: 700;">chanie</span><span style="font-weight: 300;">​edri</span></p><ul><li><ul><li><span style="font-weight: 300;">asd</span><span style="font-weight: 700;">​ariel</span></li></ul></li></ul> <p style="text-align: left;"><span style="font-weight: 700;">gilad</span><span style="font-weight: 700; text-decoration: underline;">​takoni</span></p><p style="text-align: left;"><span style="font-weight: 700; text-decoration: underline;">sara</span><span style="font-weight: 300; text-decoration: underline;">​blumental</span><span style="font-weight: 300;">​alexmayler</span><span style="font-weight: 300;">​</span></p>';
-
+        // this.editorContentElement.innerHTML = '<p style="text-align: left;"><span style="font-weight: 300;">giladmoshe</span></p>';
         return this;
     }
 
@@ -103,7 +103,6 @@ export class GtEditorContent extends GtEditor{
         if(this.isStyleChanged){
             return;
         }
-
 
         let {startNode} = this.gtSelection.getCursorInfo(),
             stateData, newIndex, length, i = 0,currentStyleToUpdate;
@@ -270,12 +269,13 @@ export class GtEditorContent extends GtEditor{
         this.updateCurrentStyleByState(state);
 
         if(eventName == 'toolbar:stateValueChange'){
-            let {isStyleChanged, elementsToApplyStyle, startNode, endNode,  endOffset} = this.checkBeforeApplyStyle(state);
+            let {isStyleChanged, elementsToApplyStyle, startNode, endNode,  endOffset, restoreRange} = this.checkBeforeApplyStyle(state);
             this.isStyleChanged = isStyleChanged;
             if(elementsToApplyStyle.length > 0){
                 this.applyStyle(this.getCurrentStyle(state) , elementsToApplyStyle);
-                this.gtSelection.updateRange(startNode, endNode, 0, endOffset);
-                //#TODO restore range
+                if(restoreRange){
+                    this.gtSelection.updateRange(startNode, endNode, 0, endOffset);
+                }
             }
         }
 
@@ -288,6 +288,7 @@ export class GtEditorContent extends GtEditor{
         let lineElementOfStartNode,
             lineElementOfEndNode,
             isStyleChanged = false,
+            restoreRange = false,
             isStateLine = this.isStateOfLine(state),
             style = this.getCurrentStyle(state),
             elementsToApplyStyle = [];
@@ -306,11 +307,17 @@ export class GtEditorContent extends GtEditor{
         }else{
             if(startNode===endNode){
 
-                let {firstElement,middleElement, lastElement} = this.splitText(startNode,startOffset,endOffset);
-
                 if(isStateLine){
-                    elementsToApplyStyle.push( firstElement );
+                    elementsToApplyStyle.push( this.getLineElement(startNode) );
                 }else{
+
+                    let {firstElement,middleElement, lastElement} = this.splitText(startNode,startOffset,endOffset, true);
+                    restoreRange = (firstElement!==lastElement);
+                    startNode = middleElement;
+                    endNode = middleElement;
+                    endOffset = (endOffset - startOffset);
+
+
                     if(firstElement===lastElement){
                         elementsToApplyStyle.push(firstElement);
                     }else{
@@ -347,6 +354,7 @@ export class GtEditorContent extends GtEditor{
 
                     startNode = this.splitText(startNode,0,startOffset,true)['lastElement'];
                     endNode = this.splitText(endNode, 0, endOffset, true)['firstElement'];
+                    restoreRange = (startNode!==endNode);
 
                     elementsToApplyStyle = this.getAllNodes(startNode, endNode);
 
@@ -359,11 +367,12 @@ export class GtEditorContent extends GtEditor{
 
         return {
             isStyleChanged : isStyleChanged,
-            elementsToApplyStyle:elementsToApplyStyle,
-            startNode:startNode.firstChild,
+            elementsToApplyStyle: elementsToApplyStyle,
+            startNode: startNode.firstChild,
             endNode: endNode.firstChild,
-            endOffset:endOffset,
-            startOffset :0
+            endOffset: endOffset,
+            startOffset: startOffset,
+            restoreRange: restoreRange
         };
     }
 
