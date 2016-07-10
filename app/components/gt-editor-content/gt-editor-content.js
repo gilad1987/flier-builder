@@ -4,11 +4,10 @@ import { GtEditorContent } from '../../assets/javascripts/GtEditorComponents/GtE
 class gtEditorContentController {
     // @ngInject
     constructor($log, $element) {
-
         let editorStateCollection = new GtFunctionalityCollection();
-        editorStateCollection.addActionCollection(this.states);
+        editorStateCollection.addStateCollection(this.states);
         let editor = new GtEditorContent(editorStateCollection,null,this.statesMetadata);
-        editor.render($element[0]);
+        editor.render($element[0],this.textForInit);
     }
 
 }
@@ -16,7 +15,8 @@ class gtEditorContentController {
 export const gtEditorContent = {
   bindings: {
       'states':'=',
-      'statesMetadata': '='
+      'statesMetadata': '=',
+      'textForInit':'='
   },
   templateUrl: '/components/gt-editor-content/gt-editor-content.html',
   controller: gtEditorContentController,

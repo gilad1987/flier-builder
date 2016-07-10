@@ -6,7 +6,7 @@ class gtToolbarController {
     constructor($element) {
         
         let toolbarFunctionalityCollection = new GtFunctionalityCollection();
-        toolbarFunctionalityCollection.addActionCollection(this.states);
+        toolbarFunctionalityCollection.addStateCollection(this.states);
         let toolbar = new GtToolbar(toolbarFunctionalityCollection,null,this.statesMetadata);
         toolbar.render($element[0]);
     }

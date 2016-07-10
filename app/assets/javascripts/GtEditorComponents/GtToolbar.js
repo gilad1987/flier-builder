@@ -13,7 +13,7 @@ export class GtToolbar  extends GtEditor{
      * @param {Object} [templateStateData]
      */
     constructor(functionalityCollection, editorParentElement, templateStateData){
-        
+
         super();
 
         this.currentStyle = {};
@@ -21,12 +21,6 @@ export class GtToolbar  extends GtEditor{
         this.setStates(functionalityCollection);
         this.classNameButtonActive = 'active';
         this.wrapperElement = editorParentElement;
-
-        /**
-         * @desc Reference to DOM Element by state's actionType/eventName
-         * @type {{}}
-         */
-        this.statesNodes = {};
 
         /**
          * @type {GtSelection}
@@ -46,51 +40,46 @@ export class GtToolbar  extends GtEditor{
      */
     onStateChange(state, eventName){
 
-        let {startNode, endNode, startOffset, endOffset, range} =  this.gtSelection.getStartAndEndNode();
-        this.updateStateButtonElement(state);
-
-        if(eventName == 'toolbarClickButton' && startNode == endNode && endOffset - startOffset == 0){
-            this.gtSelection.restoreSelection(range);
+        if(eventName == 'toolbar:stateValueChange'){ // && startNode == endNode && endOffset - startOffset == 0
+            this.gtSelection.restoreSelection( this.gtSelection.getCurrentRange() );
         }
+
+        this.updateToolBarElements(state);
+        
         return this;
     }
 
     /**
      * @desc Update Element after state's status changed.
      * @param {GtState} state
-     * @returns {undefined|boolean}
+     * @returns {GtToolbar}
      */
-    updateStateButtonElement(state){
-        if( !state ){
-            return false;
+    updateToolBarElements(state){
+
+        let wrapperButtonsElement,
+            button;
+
+        wrapperButtonsElement = this.wrapperElement.querySelectorAll('[data-state-name="'+state.stateName+'"]')[0];
+
+        if(!wrapperButtonsElement){
+            return this;
         }
 
-        let element = this.getStateElementByState(state),
-            className = this.classNameButtonActive,
-            isStateOn = state.isOn(),
-            hasClass = this.hasClass(element, className);
-
-
-        if(isStateOn && !hasClass){
-            this.addClass(element, className);
+        if(this.hasClass(wrapperButtonsElement,'selection-group')){
+            let statesButtons = wrapperButtonsElement.getElementsByClassName('Button');
+            button = wrapperButtonsElement.querySelectorAll('[data-selection-index="'+ state.getCurrentIndex() +'"]')[0];
+            this.removeClass(statesButtons,this.classNameButtonActive);
+            this.addClass(button,this.classNameButtonActive);
         }
 
-        if(!isStateOn && hasClass){
-            this.removeClass(element, className);
+        if(this.hasClass(wrapperButtonsElement,'selection-cycler')){
+            button = wrapperButtonsElement.getElementsByClassName('Button')[0];
+            this.toggleClass(button,this.classNameButtonActive);
         }
 
+        return this;
     }
 
-
-    /**
-     * @desc Get DOM element by state.
-     * @param {GtState} state
-     * @returns {Element}
-     */
-    getStateElementByState(state){
-        return state && this.statesNodes[state.actionType];
-    }
-    
     /**
      * @param {Element} editorParentElement
      * @param {Array} [groupStates]
@@ -109,58 +98,128 @@ export class GtToolbar  extends GtEditor{
         //#TODO implement for groupStates
         for(stateName in states){
             if( states.hasOwnProperty(stateName) ){
-                let button,
-                    state = states[stateName],
-                    defaultHtml = this.templateStateData[stateName].iconHtml,
-                    dataset = {
-                        'actionType' : state['actionType']
-                    },
-                    attrs = {
-                        'type': this.templateStateData[stateName].nodeType
-                    },
-                    nodeName = this.templateStateData[stateName].nodeName,
-                    buttonClassName = this.templateStateData[stateName].buttonClassName;
 
-                button = this.createNewNode(nodeName,null, buttonClassName,null,dataset,defaultHtml,attrs);
-                this.statesNodes[ state['actionType'] ] = button;
-                group.appendChild(button);
+                let state,
+                    stateData,
+                    i,
+                    buttonsConfig,
+                    buttonConfig,
+                    selectionIndex,
+                    buttonElement,
+                    ul,li,
+                    toolbarSelectionElement,
+                    currentButtonConfig,
+                    toolbarSelectionElementClasses;
+
+                state = states[stateName];
+                stateData = this.templateStateData[stateName];
+                i=0;
+
+                if(!stateData){
+                    throw new Error('Invalid template state data for: '+stateName);
+                }
+
+                buttonsConfig = stateData.buttons;
+
+                toolbarSelectionElementClasses= ['gt-toolbar-selection'];
+
+                if(stateData.type=='group'){
+                    toolbarSelectionElementClasses.push('selection-group');
+                }
+
+                if(stateData.type=='toggle'){
+                    toolbarSelectionElementClasses.push('selection-cycler');
+                }
+
+                if(stateData.type=='list'){
+                    toolbarSelectionElementClasses.push('selection-opener');
+                }
+
+                toolbarSelectionElement = this.createNewNode('div',null,toolbarSelectionElementClasses,null,{'stateName':state.stateName});
+                ul = this.createNewNode('ul');
+
+                for(buttonConfig in buttonsConfig){
+                    currentButtonConfig = buttonsConfig[buttonConfig];
+                    li = this.createNewNode('li');
+                    selectionIndex = stateData.style.values.indexOf(buttonConfig);
+                    buttonElement = this.createNewNode(currentButtonConfig.nodeName, null, 'Button', null, {'selectionIndex':selectionIndex}, currentButtonConfig.icon, currentButtonConfig.elementAttrs);
+
+                    li.appendChild(buttonElement);
+                    ul.appendChild(li);
+                }
+
+                toolbarSelectionElement.appendChild(ul);
+                group.appendChild(toolbarSelectionElement);
+
             }
         }
 
         this.wrapperElement.addEventListener('click',(event) => {
-            this.onButtonClick(event);
+            this.onToolbarSelectionClick(event);
         });
-
 
 
         toolbarElement.appendChild(group);
         frag.appendChild(toolbarElement);
         this.wrapperElement.appendChild(frag);
 
+
         return this;
     }
 
-    fireActionByDomEvent(event){
-        let element = this.getParentByNodeName(event.target);
-        if(!element){
+    onToolbarSelectionClick(event){
+
+        let button = event.target.closest('button');
+        let parentSelectionElement,
+            state,
+            stateData,
+            newIndex;
+
+        if(!button){
             return false;
         }
 
-        let stateName = element.dataset['actionType'];
+        if(this.hasClass(button,'opener')){
+            return false;
+        }
+
+        parentSelectionElement = button.closest('.gt-toolbar-selection');
+
+        let stateName = parentSelectionElement.dataset['stateName'];
+
         if(!stateName){
             return false;
         }
 
-        let state = this.getState(stateName);
-        if(!state){
+        state = this.getState(stateName);
+        stateData = this.getStateData(state);
+        if(!stateData){
             return false;
         }
 
-        state.action('toolbarClickButton');
+        if(this.hasClass(parentSelectionElement,'selection-cycler')){
+            newIndex = state.getCurrentIndex() + 1;
+            if(newIndex > stateData.style.values.length-1){
+                newIndex = 0;
+            }
+        }
+
+        if(this.hasClass(parentSelectionElement,'selection-group')){
+            newIndex = button.dataset['selectionIndex'];
+        }
+
+        if(this.hasClass(parentSelectionElement,'selection-opener')){
+            //#TODO implement dropdown style option
+        }
+
+        if(newIndex == state.getCurrentIndex()){
+            return false;
+        }
+
+
+        state.setCurrentIndex(newIndex);
+        state.action('toolbar:stateValueChange');
     }
 
 
-    onButtonClick(event){
-        this.fireActionByDomEvent(event);
-    }
 }

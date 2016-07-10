@@ -38,15 +38,21 @@
     </div>
 
     <div ng-show="$ctrl.stateActive == 'insert-text'" class="add-your-text">
-        <div id="canvas">
+        <div class="canvas" id="canvas">
             <img src="{{$ctrl.backgroundImageFlier}}" >
-            <gt-editor></gt-editor>
-            <gt-editor></gt-editor>
+            <gt-editor
+                    posx="93"
+                    posy="344"
+                    text-for-init="[  {   'text':'Join the Israel JCC for a special Yom Ha\'atzmaut',},  {    'text':'br'  },  {    'text':'screening of'  },  {    'text':'Mekonen: the Journey of an African Jew:',    'italic':true,   'bold':true}]"></gt-editor>
+
+            <img ng-src="" id="imageByHtml">
         </div>
+
+        <button ng-click="$ctrl.genPDF()">export</button>
     </div>
 
     <div ng-if="$ctrl.stateActive == 'export'"  class="export">
-        <button ng-click="$ctrl.genPDF()">export</button>
+
     </div>
 
 </div>

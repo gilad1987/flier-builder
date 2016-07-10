@@ -5,8 +5,32 @@ export class GtEditor extends GtDomUtil{
     constructor(){
         super();
         this.editorElement = null;
+        this.functionalityCollection = null;
+        this.templateStateData = null;
+        this.currentStyle = {};
         
-        this.range = null;
+    }
+
+    initCurrentStyle(){
+        let stateName,
+            state,
+            stateData,
+            states = this.getStates();
+
+        for(stateName in states){
+            state = states[stateName];
+            stateData = this.getStateData(state);
+            this.currentStyle[stateData.style.key] = {
+                key:stateData.style.key,
+                value: stateData.style.values[ state.getCurrentIndex() ] ,
+                state:state
+            };
+        }
+
+    }
+
+    getStateData(state){
+        return this.templateStateData[stateName];
     }
     
     setStates(functionalityCollection){
@@ -21,6 +45,12 @@ export class GtEditor extends GtDomUtil{
     getState(stateName){
         return this.getStates()[stateName];
     }
+
+    getStateData(state){
+        return this.templateStateData[state.stateName];
+    }
+    
+    
 
     subscribeToStates(){
         let stateName,state,states;
@@ -42,25 +72,47 @@ export class GtEditor extends GtDomUtil{
     }
 
     updateCurrentStyleByState(state){
-
-        if(!state.isOn()){
-            delete this.currentStyle[ this.templateStateData[state.actionType].styleKey ];
-        }else{
-            this.currentStyle[ this.templateStateData[state.actionType].styleKey ] = this.templateStateData[state.actionType].styleValue;
-        }
+        let stateData = this.templateStateData[state.stateName];
+        this.currentStyle[stateData.style.key].value = stateData.style.values[ state.getCurrentIndex() ];
+        return this;
     }
 
-    updateIsStyleChanged(state){
+    /**
+     *
+     * @param node
+     * @returns {Array}
+     */
+    compareCurrentStyle(node){
+        let style,
+            elementToCompare,
+            stylesNotEqual;
+
+        stylesNotEqual = [];
+
+        for(style in this.currentStyle){
+            elementToCompare = node;
+
+            if(style=='text-align'){
+                elementToCompare = node.closest('p');
+                if(!elementToCompare){
+                    continue;
+                }
+            }
+
+            if(!this.hasStyle(elementToCompare,style,this.currentStyle[style].value)){
+                stylesNotEqual.push({
+                    element : elementToCompare,
+                    state: this.currentStyle[style].state,
+                    style: style,
+                    nodeStyleValue: this.getStyleValue(elementToCompare,style),
+                    currentStyleValue: this.currentStyle[style].value
+                });
+            }
+                
+
+        }
         
-        let currentNode = this.gtSelection.getCurrentNode(),
-            styleKey = this.templateStateData[state.actionType].styleKey,
-            styleValue = this.templateStateData[state.actionType].styleValue;
-
-        this.isStyleChanged =
-            ( state.isOn() && !this.hasStyle(currentNode, styleKey, styleValue) ) ||
-            ( !state.isOn() && this.hasStyle(currentNode, styleKey, styleValue) );
-
-        return this;
+        return stylesNotEqual;
     }
 
     onStateChange(state){

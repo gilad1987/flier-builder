@@ -16,19 +16,15 @@ export class GtEditorContent extends GtEditor{
 
         super();
 
-        this.currentStyle = {};
         this.templateStateData = templateStateData;
         this.setStates(functionalityCollection);
         this.editorContentElement = null;
         this.wrapperElement = editorParentElement;
         this.isStyleChanged = false;
         this.preventSelectionChange = false;
+        this.editorContentElementInit = false;
 
-        /**
-         * @desc true when apply style in process
-         * @type {boolean}
-         */
-        this.inProcess = false;
+        this.initCurrentStyle();
 
         /**
          * @type {GtSelection}
@@ -43,9 +39,10 @@ export class GtEditorContent extends GtEditor{
 
     /**
      * @param {Element} [editorParentElement]
+     * @param {Array} [textForInit]
      * @returns {GtEditor}
      */
-    render(editorParentElement){
+    render(editorParentElement,textForInit){
         this.wrapperElement = editorParentElement;
         this.editorContentElement = this.createNewNode('div', null, 'content', null, null, null, {"contenteditable":true});
         let frag = document.createDocumentFragment();
@@ -56,20 +53,46 @@ export class GtEditorContent extends GtEditor{
 
         let selection = new GtSelection();
         document.addEventListener('selectionchange',(event) => {
-            let {startNode} = this.gtSelection.getStartAndEndNode();
-            let parentElement = startNode.closest('.content');
-            if(parentElement !== this.editorContentElement){
+            let {startNode} = this.gtSelection.getCursorInfo();
+            if(startNode==null){
+                return false;
+            }
+            let contentElement = startNode.closest('.content');
+            if(contentElement !== this.editorContentElement){
                 return false;
             }
             this.onSelectionchange(event);
         });
 
+        if(false){
+            for(let i=0;i<textForInit.length; i++){
+                let current = textForInit[i];
+                let style = {};
+                let node;
+
+                if(current.italic){
+                    style['font-style'] = 'italic';
+                }
+                if(current.bold){
+                    style['font-weight'] = 'bold';
+                }
+                if(current.text != 'br'){
+                    node = this.createNewNode('span', style);
+                    node.innerText = current.text;
+                }else{
+                    node = this.createBr();
+                }
+
+                this.editorContentElement.appendChild(node);
+            }
+        }
+
+
 
         frag.appendChild(this.editorContentElement);
         this.wrapperElement.appendChild(frag);
 
-        // document.getElementsByClassName('content')[0].innerHTML = '<span class="wordwrapper">moshe</span><span class="wordwrapper">gilad</span><span class="wordwrapper">yael</span><span class="wordwrapper">aviadASDASDAan</span>'
-        // document.getElementsByClassName('content')[0].innerHTML = '<span class="wordwrapper">moshe</span><span class="wordwrapper">gilad</span><span class="wordwrapper">yael</span><span class="wordwrapper">aviadASDASDAan</span>'
+        this.editorContentElement.innerHTML = '<p style="text-align: left;"><span style="font-weight: 300;">moshe</span><span style="font-weight: 300; text-decoration: underline;">​gilad</span><span style="font-weight: 700; text-decoration: underline;">​takoni</span></p><p style="text-align: left;"><span style="font-weight: 700; text-decoration: underline;">jermi</span><span style="font-weight: 700;">​as</span></p><p style="text-align: left;"><span style="font-weight: 700;">chanie</span><span style="font-weight: 300;">​edri</span></p><ul><li><ul><li><span style="font-weight: 300;">asd</span><span style="font-weight: 700;">​ariel</span></li></ul></li></ul> <p style="text-align: left;"><span style="font-weight: 700;">gilad</span><span style="font-weight: 700; text-decoration: underline;">​takoni</span></p><p style="text-align: left;"><span style="font-weight: 700; text-decoration: underline;">sara</span><span style="font-weight: 300; text-decoration: underline;">​blumental</span><span style="font-weight: 300;">​alexmayler</span><span style="font-weight: 300;">​</span></p>';
 
         return this;
     }
@@ -77,56 +100,47 @@ export class GtEditorContent extends GtEditor{
     onSelectionchange(event){
 
 
-        if(this.isStyleChanged == true){
+        if(this.isStyleChanged){
             return;
         }
 
-        // console.log('onSelectionchange');
 
-        let {startNode,endNode} = this.gtSelection.getStartAndEndNode(),
-            states = this.getStates(),
-            currentState,
-            actionType,
-            hasStyle,
-            isStateOn;
+        let {startNode} = this.gtSelection.getCursorInfo(),
+            stateData, newIndex, length, i = 0,currentStyleToUpdate;
 
         if(startNode.nodeName != 'SPAN'){
             return;
         }
-
-        for(actionType in states){
-            if(!states.hasOwnProperty(actionType)){
-                return;
-            }
-            currentState = states[actionType];
-            hasStyle = this.gtSelection.hasStyle(
-                startNode,
-                this.templateStateData[actionType].styleKey,
-                this.templateStateData[actionType].styleValue
-            );
-            isStateOn = currentState.isOn();
-            if(hasStyle && !isStateOn || !hasStyle && isStateOn){
-                currentState.action('selectionchange');
+        
+        let stylesNotEqual = this.compareCurrentStyle(startNode);
+        
+        if(length = stylesNotEqual.length){
+            for(;i<length;i++){
+                currentStyleToUpdate = stylesNotEqual[i];
+                stateData = this.getStateData(currentStyleToUpdate.state);
+                newIndex = stateData.style.values.indexOf(currentStyleToUpdate.nodeStyleValue);
+                currentStyleToUpdate.state.setCurrentIndex(newIndex);
+                currentStyleToUpdate.state.action('editor:updateStateByCurrentNode');
             }
         }
+
     }
-
-
+    
     checkIfSplitRequired(event){
-        let {startNode, endNode, startOffset, endOffset} = this.gtSelection.getStartAndEndNode();
-        return  !this.isBr(startNode) && ( endOffset>0 && startOffset>0 ) && (this.isStyleChanged || event.keyCode == 13);
+        return   (this.isStyleChanged || event.keyCode == 13);
     }
 
-    isBr(node){
-        return node && this.hasClass(node,'br');
-    }
-
-    isWordWrapper(node){
-        return node && this.hasClass(node,'wordwrapper');
+    setStyleToLine(lineElement){
+        this.setStyle(lineElement,'text-align',this.currentStyle['text-align'].value);
     }
 
     onKeyUp(event){
 
+        //#TODO implement when user press delete and cursor in offset == 0 in wordwrapper element
+
+        if(this.editorContentElementInit &&  !this.isStyleChanged){ //#TODO add no enter key==13
+            return;
+        }
         
         /**
          * 40 arrow bottom
@@ -153,52 +167,68 @@ export class GtEditorContent extends GtEditor{
             return;
         }
 
-        // console.log('onKeyUp');
-
         if(!this.hasChildren(this.editorContentElement)){
-            let { node } = this.gtSelection.createNewTextWrapper();
-            this.setStyleByCollection( node, this.currentStyle );
+
+            let lineElement = this.createNewLine();
+            let wordwrapper = this.createNewNode('span',null,null,null,null,"\u200B");
+            this.setStyleWordwrapper(wordwrapper);
+            lineElement.appendChild(wordwrapper);
+            this.editorContentElement.appendChild(lineElement);
+            this.setStyleToLine(lineElement);
+            this.gtSelection.addRange(wordwrapper);
+            this.editorContentElementInit = true;
             return;
         }
 
-        let onKeyUpRange = this.gtSelection.getCurrentRange(),
-            rangeToRestore = onKeyUpRange;
-
-        let splitRequired = this.checkIfSplitRequired(event);
-        let splitRange;
-
-        let currentNode = this.gtSelection.getParentNodeByRange(onKeyUpRange);
-
-        let {startNode, endNode, startOffset, endOffset} = this.gtSelection.getStartAndEndNode();
-
-        if(splitRequired){
-            let {range, node} = this.gtSelection.splitRangeByStyle(startNode,startOffset,startNode.firstChild.length,startNode.firstChild.length,false);
-            rangeToRestore = range;
-            currentNode = node;
-            this.gtSelection.restoreSelection(range);
+        if(!this.checkIfSplitRequired(event)){
+            return;
         }
+
+        let {startNode, endNode, startOffset, endOffset} = this.gtSelection.getCursorInfo();
 
         // keyCode 13 -> Enter key
         if(event.keyCode == 13){
-            let isWordWrapper = this.isWordWrapper(currentNode);
-            this.prepareBeforeCreateBr( true );
-            this.addBr();
-            this.gtSelection.restoreSelection(rangeToRestore);
+            let {firstElement, lastElement} = this.splitText(startNode,0,endOffset);
+
+            this.cloneStyle(firstElement,lastElement);
+            let newlineElement = this.createNewLine();
+            this.setStyleToLine(newlineElement);
+
+            let nextElement,
+                currentElement,
+                lineElement,
+                frag = document.createDocumentFragment();
+
+            nextElement = lastElement;
+            lineElement = this.getLineElement(firstElement);
+
+            do{
+                currentElement = nextElement;
+                nextElement = currentElement.nextElementSibling;
+                frag.appendChild(currentElement);
+            }while(nextElement);
+
+            newlineElement.appendChild(frag);
+            this.insertAfter(newlineElement, lineElement);
+
+            this.gtSelection.addRange(lastElement);
+            this.gtSelection.changeSelection(lastElement,true);
+            this.gtSelection.addRange(lastElement);
+            this.isStyleChanged = false;
         }
 
-        currentNode = this.gtSelection.getParentNodeByRange(rangeToRestore);
+        if(this.isStyleChanged){
+            let {firstElement, lastElement} = this.splitText(startNode,0,endOffset);
+            this.cloneStyle(firstElement,lastElement);
+            let wordwrapper = this.createNewWordwrapperElement();
+            this.setStyleWordwrapper(wordwrapper);
+            this.insertAfter(wordwrapper, firstElement);
+            this.gtSelection.addRange(wordwrapper);
+            this.gtSelection.changeSelection(wordwrapper);
 
-        if(event.keyCode != 13 && ( this.isStyleChanged || !this.isWordWrapper(currentNode) )){
-            let wordWrapper = this.createNewNode('span',this.currentStyle,'wordwrapper',null,null,"\u200B");
-            this.gtSelection.setSelectionBefore(currentNode);
-            let range = this.gtSelection.createNewRangeByNode(wordWrapper);
-            this.gtSelection.setSelectionAfter(wordWrapper);
         }
 
         this.isStyleChanged = false;
-
-
-
         if(event.keyCode == 13){
             event.preventDefault();
             return false;
@@ -206,152 +236,157 @@ export class GtEditorContent extends GtEditor{
 
     }
 
-
     /**
-     * @desc Create new <span>\u200B<br></span>
-     * @returns {Range}
+     *
+     * @param element
+     * @returns {*}
      */
-    addBr(){
-        let wrapper = this.createNewNode('span',null,'br',null,null,"\u200B<br>");
-        return this.gtSelection.createNewRangeByNode(wrapper);
+    getLineElement(element){
+        //#TODO change closest ul element
+        return element.closest('p') || element.closest('ul');
     }
 
-    prepareBeforeCreateBr(setSelectionBefore){
-        let s = window.getSelection();
-        let r = s.getRangeAt(0);
-        let sc = r.startContainer;
-        let ec = r.endContainer;
-        let nodeToCheckIsBr = sc.nodeName == 'SPAN' ? sc : sc.parentNode;
-        let newRange;
-        if(setSelectionBefore){
-            newRange = this.gtSelection.setSelectionBefore(nodeToCheckIsBr);
-        }else{
-            newRange = this.gtSelection.setSelectionAfter(nodeToCheckIsBr);
+    createNewLine(isNotEmpty){
+        return this.createNewNode('p',null,null,null,null, isNotEmpty ? "\u200B" : '');
+    }
+
+    createNewWordwrapperElement(){
+        return this.createNewNode('span',null,null,null,null, "\u200B");
+    }
+
+    setStyleWordwrapper(wordwrapper){
+        this.setStyleByCollection( wordwrapper, this.currentStyle ,['text-align']);
+    }
+
+    getCurrentStyle(state){
+        return{
+            key:this.currentStyle[state.stateName].key,
+            value:this.currentStyle[state.stateName].value
         }
-
-        return newRange;
     }
-    
 
-    onStateChange(state, sourceEvent){
-        // console.log(sourceEvent);
+    onStateChange(state, eventName){
         
         this.updateCurrentStyleByState(state);
-        this.updateIsStyleChanged(state);
 
-        if(this.isStyleChanged && sourceEvent == 'toolbarClickButton'){
-            
-            this.applyStyle(state);
-        }
-
-        if(this.isStyleChanged && sourceEvent == 'changeSelection'){
-
+        if(eventName == 'toolbar:stateValueChange'){
+            let {isStyleChanged, elementsToApplyStyle, startNode, endNode,  endOffset} = this.checkBeforeApplyStyle(state);
+            this.isStyleChanged = isStyleChanged;
+            if(elementsToApplyStyle.length > 0){
+                this.applyStyle(this.getCurrentStyle(state) , elementsToApplyStyle);
+                this.gtSelection.updateRange(startNode, endNode, 0, endOffset);
+                //#TODO restore range
+            }
         }
 
     }
 
-    applyStyle(state){
+    checkBeforeApplyStyle(state){
+
+        let {startNode, endNode, startOffset, endOffset, range} =  this.gtSelection.getCursorInfo();
+
+        let lineElementOfStartNode,
+            lineElementOfEndNode,
+            isStyleChanged = false,
+            isStateLine = this.isStateOfLine(state),
+            style = this.getCurrentStyle(state),
+            elementsToApplyStyle = [];
 
         if(!this.gtSelection.isTextSelected()){
-            return;
+            let element = startNode;
+            if(isStateLine){
+                element = this.getLineElement(startNode);
+            }
+
+            isStyleChanged = !this.hasStyle(element,style.key,style.value);
+            if(isStyleChanged && isStateLine){
+                elementsToApplyStyle.push(element);
+            }
+
+        }else{
+            if(startNode===endNode){
+
+                let {firstElement,middleElement, lastElement} = this.splitText(startNode,startOffset,endOffset);
+
+                if(isStateLine){
+                    elementsToApplyStyle.push( firstElement );
+                }else{
+                    if(firstElement===lastElement){
+                        elementsToApplyStyle.push(firstElement);
+                    }else{
+                        if(middleElement!=null){
+                            this.cloneStyle(firstElement,lastElement);
+                            elementsToApplyStyle.push(middleElement);
+                        }else{
+                            if(startOffset==0){
+                                this.cloneStyle(firstElement,lastElement);
+                            }
+                            elementsToApplyStyle.push( startOffset==0 ? firstElement :lastElement );
+                        }
+                    }
+                }
+
+            }else{
+
+                if(isStateLine){
+                    lineElementOfStartNode = this.getLineElement(startNode);
+                    lineElementOfEndNode = this.getLineElement(endNode);
+
+                    let currentElement = lineElementOfStartNode;
+
+                    do{
+
+                        if(!this.hasStyle(currentElement,style.key,style.value)){
+                            elementsToApplyStyle.push(currentElement);
+                        }
+
+                    }while (currentElement !== lineElementOfEndNode && ( currentElement = currentElement.nextElementSibling ));
+
+
+                }else{
+
+                    startNode = this.splitText(startNode,0,startOffset,true)['lastElement'];
+                    endNode = this.splitText(endNode, 0, endOffset, true)['firstElement'];
+
+                    elementsToApplyStyle = this.getAllNodes(startNode, endNode);
+
+                }
+
+            }
+
         }
 
 
-        this.inProcess = true;
-
-        let s = window.getSelection();
-        let r = s.getRangeAt(0);
-        let sc = r.startContainer;
-        let ec = r.endContainer;
-        let {startNode, endNode} = this.gtSelection.getStartAndEndNode(r);
-        let element = startNode;
-        let elementNeedSplit = false;
-
-        let textData = {
-            startOffset: r.startOffset,
-            endOffset: r.endOffset,
-            startLength: sc.length,
-            endLength: ec.length
+        return {
+            isStyleChanged : isStyleChanged,
+            elementsToApplyStyle:elementsToApplyStyle,
+            startNode:startNode.firstChild,
+            endNode: endNode.firstChild,
+            endOffset:endOffset,
+            startOffset :0
         };
+    }
 
-        let lastElement = false,
-            newRangeStartNode,
-            newRangeEndNode;
+    getCurrentStyle(state){
+        return this.currentStyle[state.stateName];
+    }
 
-        let count = 0;
+    isStateOfLine(state){
+        return state.stateName == 'text-align' || state.stateName == 'direction';
+    }
 
+    applyStyle(style, elements){
 
-        do{
-            let startOffset = element === startNode ? textData.startOffset : 0,
-                length = element === startNode ? textData.startLength : textData.endLength,
-                endOffset = element === startNode ? length : textData.endOffset;
+        let i=0,
+            element,
+            elementsLength = elements.length;
 
-            if(startNode === endNode){
-                textData.endOffset = endOffset = r.endOffset - r.startOffset;
+        for(; i<elementsLength; i++){
+            element = elements[i];
+            this.setStyle(element,style.key ,style.value);
+        }
 
-                if(startNode.firstChild.length > textData.endOffset  && textData.startOffset > 0){
-                    this.gtSelection.splitRangeByStyle(element, 0, textData.startOffset, length, true);
-                    textData.startOffset  = 0;
-                    startOffset = 0;
-                }
-
-                endNode = element;
-            }
-
-
-            let fcLength = this.gtSelection.getParentNodeByRange(r).firstChild.length;
-            elementNeedSplit =
-
-
-
-                // (textData.endOffset < element.firstChild.length) &&
-                ( (startNode === endNode && ((textData.endOffset - textData.startOffset) > 0) && (textData.endOffset - textData.startOffset) < fcLength ) ||
-                ( element === startNode && textData.startOffset > 0 ) ||
-                ( element === endNode && (textData.endOffset > 0) && textData.startOffset>0) ) ;
-
-            lastElement = ( element === endNode );
-            length = textData.endLength  = element.firstChild.length;
-
-            if( elementNeedSplit ){
-                let {node} = this.gtSelection.splitRangeByStyle(element, startOffset, endOffset, element.firstChild.length, lastElement);
-                element = node;
-
-            }
-
-            if(this.isBr(element)){
-                continue;
-            }
-
-            if(state.isOn()){
-                this.setStyle(element, this.templateStateData[state.actionType].styleKey, this.templateStateData[state.actionType].styleValue);
-            }else{
-                this.removeStyle(element, this.templateStateData[state.actionType].styleKey);
-            }
-
-            if(!newRangeStartNode){
-                newRangeStartNode = element;
-            }
-
-            if(lastElement){
-                newRangeEndNode = element;
-            }
-
-            count++;
-            if(count>20) {
-                console.log('break');
-                break;
-            }
-
-        }while( (!lastElement) && (element = element.nextSibling));
-
-        // create new range for restore
-        let newRange = document.createRange();
-        newRange.setStart(newRangeStartNode, 0);
-        newRange.setEnd(newRangeEndNode.firstChild, newRangeEndNode.firstChild.length);
-
-        this.gtSelection.restoreSelection(newRange);
         this.isStyleChanged = false;
-        this.inProcess = false;
 
     }
 

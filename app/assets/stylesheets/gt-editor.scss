@@ -3,16 +3,14 @@
 .italic{font-style: italic;}
 
 [contenteditable="true"]{outline: none;}
-.content{
-  overflow: auto;
-  display: inline-block;
-  min-width: 200px;
-  min-height: 150px;
-}
 
 .GtTextEditor{
   display: inline-block;
   border:1px solid transparent;
+
+  p{
+    margin:0;
+  }
 
   &.active{
     .ToolBar{
@@ -29,19 +27,71 @@
 
     .content{
       resize: both;
+      width:100%;
+      overflow: auto;
+      display: inline-block;
+      min-width: 200px;
+      min-height: 150px;
     }
   }
 
   .ToolBar{
     background-color: #F0F0F0;
-    padding: 10px 10px 7px;
+    padding: 10px;
     margin-left: 0px;
     border: 1px solid #EEE;
     opacity:0;
+    overflow: hidden;
 
     .ButtonGroup{
       overflow: hidden;
-      display: inline-block;
+      float: left;
+      margin-right:5px;
+
+      &:first-child,&:last-child{
+        margin:0;
+      }
+
+      .gt-toolbar-selection:first-child {
+
+        ul {
+          li:first-child {
+            .Button{
+              border-top-left-radius:3px;
+              border-bottom-left-radius:3px;
+            }
+          }
+        }
+      }
+
+      .gt-toolbar-selection {
+        display: block;
+        float: left;
+
+        ul{
+          padding: 0;
+          margin:0;
+          overflow: hidden;
+
+          li{
+            display: block;
+            float:left;
+          }
+        }
+      }
+
+      .gt-toolbar-selection:last-child {
+
+        ul {
+          li:last-child {
+            .Button{
+              border-right-width: 1px;
+              border-top-right-radius:3px;
+              border-bottom-right-radius:3px;
+            }
+          }
+        }
+      }
 
       .Button{
         text-transform: capitalize;
@@ -54,17 +104,7 @@
         padding: 3px 6px;
         cursor:pointer;
         font-size:16px;
-        transition: none !important;
-
-        &:first-child{
-          border-top-left-radius:3px;
-          border-bottom-left-radius:3px;
-        }
-        &:last-child{
-          border-right-width: 1px;
-          border-top-right-radius:3px;
-          border-bottom-right-radius:3px;
-        }
+        width:30px;
 
         &:hover{
           background-color: #ebebeb;

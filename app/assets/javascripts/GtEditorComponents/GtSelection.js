@@ -10,68 +10,28 @@ export class GtSelection extends GtDomUtil{
         super();
     }
 
-    /**
-     *
-     * @param {string} [text]
-     * @param {number} [startOffset]
-     * @param {number} [endOffset]
-     * @param {string} [html]
-     * @param {Element} [node]
-     * @returns {{range: Range, node: Element}}
-     */
-    createNewTextWrapper(text,startOffset,endOffset,html,node){
+
+    getCurrentRange(){
         let s = window.getSelection();
-        let r = s.getRangeAt(0);
-        let sc = r.startContainer;
-        let ec = r.endContainer;
-        let defaultText = text ? text : "\u200B";
-        let span = node ? node : this.createNewNode('span',null,null,null,null,defaultText);
-
-        span.className = 'wordwrapper';
-
-        r = r.cloneRange();
-        r.insertNode(span);
-
-        r.setStart(span,startOffset?startOffset:0);
-        r.setEnd(span,endOffset?endOffset:0);
-
-        r.deleteContents();
-
-        s.removeAllRanges();
-        // console.log('createNewTextWrapper');
-        s.addRange(r);
-
-        return {
-            range:r,
-            node:span
-        }
+        return s.getRangeAt(0);
     }
-    
-    getCurrentNode(){
-        let s = window.getSelection();
-        let r = s.getRangeAt(0);
-        return this.getParentNodeByRange(r);
-    }
-
-    /**
-     * @desc
-     * @param {Range} [range]
-     * @returns {Node}
-     */
-    getParentNodeByRange(range){
-        let s = window.getSelection();
-        let r = range ? range : s.getRangeAt(0);
-        return r.startContainer.nodeName == 'SPAN' ? r.startContainer : r.startContainer.parentNode;
-    }
-
 
     /**
      * @param {Range} [range]
      * @returns {{startNode: Node, endNode: Node}}
      */
-    getStartAndEndNode(range){
+    getCursorInfo(range){
         
         let s = window.getSelection();
+        if(s.type == 'None'){
+            return {
+                startNode :null,
+                endNode: null,
+                startOffset :0,
+                endOffset:0,
+                range:null
+            }
+        }
         let r = range ? range : s.getRangeAt(0);
         
         return {
@@ -83,76 +43,38 @@ export class GtSelection extends GtDomUtil{
         }
     }
 
-    /**
-     *
-     * @param element
-     * @param startOffset
-     * @param endOffset
-     * @param length
-     * @param {boolean} [setSelectionBefore]
-     * @returns {{range, node}|{range: Range, node: Element}}
-     */
-    splitRangeByStyle(element, startOffset, endOffset, length, setSelectionBefore){
-        let s = window.getSelection();
-        let r = s.getRangeAt(0);
-        let textForNewNode;
-
-        length = length!=null ? length : element.firstChild.length;
-
-        // get element.firstChild for text Element
-        setSelectionBefore ?
-            this.setSelectionBefore(element) :
-            this.setSelectionAfter(element);
-
-        textForNewNode = element.firstChild.nodeValue.toString().substr(startOffset,endOffset);
-
-        let result = this.createNewTextWrapper(textForNewNode);
-
-        element.firstChild.nodeValue = element.firstChild.nodeValue.toString().substr(
-            startOffset == 0 ? endOffset : 0  ,
-            startOffset == 0 ? length : startOffset
-        );
-
-        this.cloneStyle(element,result.node);
-
-        return result;
-    }
-
-    /**
-     * @param {Element} node
-     * @param {boolean} [collapse]
-     * @returns {Range}
-     */
-    createNewRangeByNode(node,collapse){
-        let s = window.getSelection();
-        let r = s.getRangeAt(0);
-        let sc = r.startContainer;
-        let ec = r.endContainer;
-
-        r = r.cloneRange();
-        r.deleteContents();
-        r.insertNode(node);
-
-        r.setStart(node.firstChild,0);
-        r.setEnd(node.firstChild,0);
-
-        s.removeAllRanges();
-        // console.log('createNewRangeByNode');
-        s.addRange(r);
-        
-        return r;
-    }
-
-    getCursorData(){
-
-    }
 
     isTextSelected(){
-        let s = window.getSelection();
-        let r = s.getRangeAt(0);
-        let {startNode, endNode} = this.getStartAndEndNode(r);
+        let {startNode, endNode, startOffset, endOffset} =  this.getCursorInfo();
+        return ( startNode === endNode && ( startOffset-endOffset != 0 ) ) || startNode !== endNode;
+    }
 
-        return ( ( r.endOffset - r.startOffset ) != 0 ) || startNode !== endNode;
+    addRange(startNode, endNode, startOffset, endOffset){
+        let range = document.createRange(),
+            selection = window.getSelection();
+
+        range.selectNode(startNode);
+        range.setStart(startNode.firstChild ? startNode.firstChild :startNode,0);
+        range.setEnd(startNode.firstChild ? startNode.firstChild :startNode,0);
+        
+        selection.removeAllRanges();
+        // console.log('addRange');
+        selection.addRange(range);
+
+        return range;
+    }
+    
+    updateRange(stateNode,endNode,startOffset,endOffset){
+        let range = document.createRange(),
+            selection = window.getSelection();
+
+        range.setStart(stateNode,startOffset);
+        range.setEnd(endNode,endOffset);
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        return range;
     }
 
     restoreSelection(range,deleteContent,startOffset,endOffset) {
@@ -176,42 +98,18 @@ export class GtSelection extends GtDomUtil{
         }
     }
 
-
-    setSelectionBefore(node){
+    changeSelection(node,before){
         let s = window.getSelection();
         let r = s.getRangeAt(0);
         s.removeAllRanges();
         r = r.cloneRange();
-        r.setStartBefore(node);
+        if(before){
+            r.setStartBefore(node);
+        }else{
+            r.setStartAfter(node);
+        }
         s.addRange(r);
-        // console.log('setSelectionBefore');
         return r;
     }
 
-    setSelectionAfter(node,setStart){
-        let s = window.getSelection();
-        let r = s.getRangeAt(0);
-        s.removeAllRanges();
-        r = r.cloneRange();
-        r.setStartAfter(node);
-        if(setStart){
-            r.setStart(node,0);
-            r.setEnd(node,0);
-        }
-        // console.log('setSelectionAfter');
-        s.addRange(r);
-        return r;
-    }
-    
-    getCurrentRange(){
-        if (window.getSelection) {
-            let sel = window.getSelection();
-            if (sel.getRangeAt && sel.rangeCount) {
-                return sel.getRangeAt(0);
-            }
-        } else if (document.selection && document.selection.createRange) {
-            return document.selection.createRange();
-        }
-        return null;
-    }
 }

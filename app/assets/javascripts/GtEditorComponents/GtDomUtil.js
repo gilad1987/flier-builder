@@ -14,7 +14,7 @@ export class GtDomUtil extends GtEvent{
      *
      * @param {string} nodeName
      * @param {Object|null} [styles]
-     * @param {array|string|null} [classes]
+     * @param {Array|string|null} [classes]
      * @param {string|null} [id]
      * @param {object|string} [dataset]
      * @param {Element|string} [htmlOrString]
@@ -86,19 +86,6 @@ export class GtDomUtil extends GtEvent{
 
     /**
      *
-     * @param target
-     * @param nodeName
-     * @returns {Element}
-     */
-    getParentByNodeName(target,nodeName){
-        if(target.nodeName == nodeName){
-            return event.target;
-        }
-        return target.closest('button');
-    }
-
-    /**
-     *
      * @param {Element} node
      * @param {string} key
      * @param {string} [value]
@@ -107,7 +94,8 @@ export class GtDomUtil extends GtEvent{
     hasStyle(node,key,value){
         // console.log('hasStyle');
         if(!node) return false;
-        return value ? node.style[key] == value : node.style[key] != '';
+        let s = node.style[key];
+        return node.style[key] == value || (value=='' && typeof s == 'undefined');
     }
 
     /**
@@ -138,34 +126,18 @@ export class GtDomUtil extends GtEvent{
     /**
      *
      * @param {Element} node
+     * @param {Array} [preventStyle]
      * @param collection
      */
-    setStyleByCollection(node,collection){
-        let property;
-        for(property in collection){
-            if(collection.hasOwnProperty(property))
-                this.setStyle(node,property,collection[property]);
-        }
-    }
-
-    /**
-     *
-     * @param {Element} node
-     * @param {object} collection
-     * @returns {boolean}
-     */
-    hasStyleCollection(node,collection){
-        let property,
-            hasStyleCollection = true;
-
-        for(property in collection){
-            if(collection.hasOwnProperty(property) && !this.hasStyle(node,property,collection[property])){
-                hasStyleCollection = false;
-                break;
+    setStyleByCollection(node,collection,preventStyle){
+        let style;
+        for(style in collection){
+            let _preventStyle = preventStyle && preventStyle.indexOf(style) != -1;
+            if(collection.hasOwnProperty(style) && !_preventStyle){
+                this.setStyle(node,style,collection[style].value);
             }
-        }
 
-        return hasStyleCollection;
+        }
     }
 
     /**
@@ -191,15 +163,37 @@ export class GtDomUtil extends GtEvent{
     }
 
     /**
+     * 
+     * @param newNode
+     * @param referenceNode
+     */
+    insertAfter(newNode, referenceNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    }
+    
+    /**
      *
-     * @param {Element} node
+     * @param {Element|Array|NodeList} elements
      * @param {string} className
      * @returns {*}
      */
-    removeClass(node,className){
-        if(!node) return;
-        node.classList.remove(className);
+    removeClass(elements,className){
+        if(!elements) return this;
+
+        if(Array.isArray(elements)){
+            elements = [elements];
+        }
+
+        let i=0,len=elements.length;
+        for(;i<len;i++){
+            elements[i].classList.remove(className);
+        }
+
         return this;
+    }
+
+    getStyleValue(node, key){
+        return node.style[key];
     }
 
     /**
@@ -260,6 +254,103 @@ export class GtDomUtil extends GtEvent{
         
         return this;
     }
+
+    /**
+     *
+     * @param {Element} element
+     * @param {Number} startOffset
+     * @param {Number} [endOffset]
+     * @param {boolean} [cloneStyle]
+     * @returns {{firstElement: Element, middleElement: Element|undefined, lastElement: Element}}
+     */
+    splitText(element, startOffset, endOffset, cloneStyle) {
+
+        let nodeTextToSplit = element.firstChild,
+            length = nodeTextToSplit.length,
+            textStart,
+            textMiddle,
+            result,
+            textLast;
+
+        endOffset = endOffset ? endOffset : length;
+
+        result = {
+            firstElement:element,
+            middleElement:null,
+            lastElement:element
+        };
+
+        if(startOffset > 0 && endOffset < length){
+            textStart = nodeTextToSplit.nodeValue.toString().substr(0,startOffset);
+            textMiddle = nodeTextToSplit.nodeValue.toString().substr(startOffset,endOffset);
+            textLast = nodeTextToSplit.nodeValue.toString().substr(endOffset,nodeTextToSplit.length);
+            nodeTextToSplit.nodeValue = textStart;
+            result.middleElement = this.createNewNode('span',null,null,null,null,textMiddle);
+            result.lastElement = this.createNewNode('span',null,null,null,null,textLast);
+
+            if(cloneStyle){
+                this.cloneStyle(element,result.middleElement);
+                this.cloneStyle(element,result.lastElement);
+            }
+
+            this.insertAfter(result.middleElement, element);
+            this.insertAfter(result.lastElement, result.middleElement);
+        }
+
+        if(startOffset == 0 &&  endOffset < length){
+            textStart = nodeTextToSplit.nodeValue.toString().substr(startOffset,endOffset);
+            textLast = nodeTextToSplit.nodeValue.toString().substr(endOffset,nodeTextToSplit.length);
+            nodeTextToSplit.nodeValue = textStart;
+            result.lastElement = this.createNewNode('span',null,null,null,null,textLast);
+            if(cloneStyle){
+                this.cloneStyle(element,result.lastElement);
+            }
+            this.insertAfter(result.lastElement,element);
+        }
+
+        if(startOffset>0 && endOffset==length){
+            textStart = nodeTextToSplit.nodeValue.toString().substr(0,startOffset);
+            textLast = nodeTextToSplit.nodeValue.toString().substr(startOffset,endOffset);
+            nodeTextToSplit.nodeValue = textStart;
+            result.lastElement = this.createNewNode('span',null,null,null,null,textLast);
+            if(cloneStyle){
+                this.cloneStyle(element,result.lastElement);
+            }
+            this.insertAfter(result.lastElement,element);
+        }
+
+        return result;
+    }
     
+    getAllNodes(startNode, endNode ){
+
+        let nodes = [];
+        
+        var getNextNode = function(node, endNode, parentNodes){
+
+            if(node==null){
+                return  getNextNode(parentNodes.parentNode.nextSibling ,  endNode, parentNodes.parentNode);
+            }
+
+            if (endNode == node) {
+                return null;
+            }
+
+            if (node.firstChild && node.firstChild.nodeType != 3) {
+                return node.firstChild;
+            }
+
+            return node.nextSibling || getNextNode(node.parentNode.nextSibling ,  endNode, node.parentNode);
+        };
+
+        do {
+            if(startNode.nodeName == 'SPAN'){
+                nodes.push(startNode);
+            }
+        }
+        while ( startNode = getNextNode(startNode, endNode) );
+        
+        return nodes;
+    }
 
 }
