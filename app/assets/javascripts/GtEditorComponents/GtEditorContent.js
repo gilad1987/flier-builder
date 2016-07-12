@@ -64,36 +64,12 @@ export class GtEditorContent extends GtEditor{
             this.onSelectionchange(event);
         });
 
-        if(false){
-            for(let i=0;i<textForInit.length; i++){
-                let current = textForInit[i];
-                let style = {};
-                let node;
-
-                if(current.italic){
-                    style['font-style'] = 'italic';
-                }
-                if(current.bold){
-                    style['font-weight'] = 'bold';
-                }
-                if(current.text != 'br'){
-                    node = this.createNewNode('span', style);
-                    node.innerText = current.text;
-                }else{
-                    node = this.createBr();
-                }
-
-                this.editorContentElement.appendChild(node);
-            }
-        }
-
-
-
         frag.appendChild(this.editorContentElement);
         this.wrapperElement.appendChild(frag);
 
         // this.editorContentElement.innerHTML = '<p style="text-align: left;"><span style="font-weight: 300;">moshe</span><span style="font-weight: 300; text-decoration: underline;">​gilad</span><span style="font-weight: 700; text-decoration: underline;">​takoni</span></p><p style="text-align: left;"><span style="font-weight: 700; text-decoration: underline;">jermi</span><span style="font-weight: 700;">​as</span></p><p style="text-align: left;"><span style="font-weight: 700;">chanie</span><span style="font-weight: 300;">​edri</span></p><ul><li><ul><li><span style="font-weight: 300;">asd</span><span style="font-weight: 700;">​ariel</span></li></ul></li></ul> <p style="text-align: left;"><span style="font-weight: 700;">gilad</span><span style="font-weight: 700; text-decoration: underline;">​takoni</span></p><p style="text-align: left;"><span style="font-weight: 700; text-decoration: underline;">sara</span><span style="font-weight: 300; text-decoration: underline;">​blumental</span><span style="font-weight: 300;">​alexmayler</span><span style="font-weight: 300;">​</span></p>';
-        // this.editorContentElement.innerHTML = '<p style="text-align: left;"><span style="font-weight: 300;">giladmoshe</span></p>';
+        this.editorContentElement.innerHTML = '<p style="text-align: left;"><span style="font-weight: 300;">Join the Israel JCC for a special Yom Ha\'atzmaut screening of Mekonen: the Journey of an African Jew: DATE: May 9, 2016 TIME: 8:00 PM LOCATION: 67 Independence Lane RSVP: Binyamin N – Israeljcc@gmail.com</span></p>';
+        this.editorContentElement.innerHTML = '<p style="text-align: center;"><span style="font-weight: 300;">Join the Israel JCC for a special Yom Ha\'atzmaut </span></p><p style="text-align: center;"><span style="font-weight: 300;">screening of </span><span style="font-weight: 700;">Mekonen: the Journey of an African Jew:</span><span style="font-weight: 300;"> </span></p><p style="text-align: left;"><span style="font-weight: 700;">DATE</span><span style="font-weight: 300;">: May 9, 2016 </span></p><p style="text-align: left;"><span style="font-weight: 700;">TIME</span><span style="font-weight: 300;">: 8:00 PM </span></p><p style="text-align: left;"><span style="font-weight: 700;">LOCATION</span><span style="font-weight: 300;">: 67 Independence Lane </span></p><p style="text-align: left;"><span style="font-weight: 700;">RSVP</span><span style="font-weight: 300;">: Binyamin N – Israeljcc@gmail.com</span></p>';
         return this;
     }
 
@@ -185,34 +161,51 @@ export class GtEditorContent extends GtEditor{
 
         let {startNode, endNode, startOffset, endOffset} = this.gtSelection.getCursorInfo();
 
+        
+        //#TODO fix bug when press enter and cursor in and of the line
+
         // keyCode 13 -> Enter key
         if(event.keyCode == 13){
             let {firstElement, lastElement} = this.splitText(startNode,0,endOffset);
-
-            this.cloneStyle(firstElement,lastElement);
-            let newlineElement = this.createNewLine();
-            this.setStyleToLine(newlineElement);
-
             let nextElement,
                 currentElement,
-                lineElement,
+                newlineElement,
+                startNodeLineElement,
                 frag = document.createDocumentFragment();
 
-            nextElement = lastElement;
-            lineElement = this.getLineElement(firstElement);
+            //#TODO rewrite this part
+            
+            startNodeLineElement = this.getLineElement(firstElement);
 
+            if(firstElement!==lastElement){
+                this.cloneStyle(firstElement,lastElement);
+            }
+
+            nextElement = lastElement;
             do{
                 currentElement = nextElement;
                 nextElement = currentElement.nextElementSibling;
-                frag.appendChild(currentElement);
+                if(currentElement){
+                    frag.appendChild(currentElement);
+                }
             }while(nextElement);
 
-            newlineElement.appendChild(frag);
-            this.insertAfter(newlineElement, lineElement);
+            if(lastElement.innerText == "" || lastElement.innerText == " "){
+                lastElement.innerText = "\u200B";
+            }
 
-            this.gtSelection.addRange(lastElement);
-            this.gtSelection.changeSelection(lastElement,true);
-            this.gtSelection.addRange(lastElement);
+
+
+            newlineElement = this.createNewLine();
+            this.setStyleToLine(newlineElement);
+
+            newlineElement.appendChild(frag);
+            this.insertAfter(newlineElement, startNodeLineElement);
+            if(startNodeLineElement.childNodes.length == 0){
+                startNodeLineElement.appendChild( this.cloneStyle( firstElement, this.createNewWordwrapperElement() ) );
+            }
+            this.gtSelection.updateRange(lastElement);
+
             this.isStyleChanged = false;
         }
 
@@ -222,12 +215,11 @@ export class GtEditorContent extends GtEditor{
             let wordwrapper = this.createNewWordwrapperElement();
             this.setStyleWordwrapper(wordwrapper);
             this.insertAfter(wordwrapper, firstElement);
-            this.gtSelection.addRange(wordwrapper);
-            this.gtSelection.changeSelection(wordwrapper);
-
+            this.gtSelection.updateRange(wordwrapper.firstChild,null,0,1);
         }
 
         this.isStyleChanged = false;
+
         if(event.keyCode == 13){
             event.preventDefault();
             return false;
@@ -313,9 +305,12 @@ export class GtEditorContent extends GtEditor{
 
                     let {firstElement,middleElement, lastElement} = this.splitText(startNode,startOffset,endOffset, true);
                     restoreRange = (firstElement!==lastElement);
-                    startNode = middleElement;
-                    endNode = middleElement;
-                    endOffset = (endOffset - startOffset);
+                    if(middleElement){
+                        startNode = middleElement;
+                        endNode = middleElement;
+                        endOffset = (endOffset - startOffset);
+                    }
+
 
 
                     if(firstElement===lastElement){
