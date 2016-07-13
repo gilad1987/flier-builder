@@ -13,4 +13,29 @@
   }
 }
 
-.canvas{position:relative; display: inline-block;}
+.AddYourText{
+  max-width:80%;
+  margin:0 auto;
+}
+
+
+.FlierPreview {
+  float:left;
+
+  h2{
+    text-align: center;
+  }
+
+  .Canvas {
+    position: relative;
+  }
+}
+
+.Sidebar{
+  float:right;
+
+  .UploadImage{
+    border: dashed 1px #c7c7c7;
+    padding: 20px 40px;
+  }
+}

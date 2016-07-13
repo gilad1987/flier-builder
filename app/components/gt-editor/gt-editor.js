@@ -123,19 +123,28 @@ class gtEditorController {
             }
         };
 
-
         $element[0].style.position = "absolute";
         $element[0].style.top = this.posy+'px';
         $element[0].style.left = this.posx+'px';
+        
+        if(this.editorHeight!=''){
+            $element[0].style.height = this.editorHeight+'px';
+        }
+
+        if(this.editorWidth!=''){
+            $element[0].style.width = this.editorWidth+'px';
+        }
 
     }
 }
 
 export const gtEditor = {
   bindings: {
-      'posx':'@',
-      'posy':'@',
-      'textForInit':'='
+      'posx':'=',
+      'posy':'=',
+      'text':'=',
+      'editorWidth':'=',
+      'editorHeight':'='
   },
   templateUrl: '/components/gt-editor/gt-editor.html',
   controller: gtEditorController,

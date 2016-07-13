@@ -7,7 +7,7 @@ class gtEditorContentController {
         let editorStateCollection = new GtFunctionalityCollection();
         editorStateCollection.addStateCollection(this.states);
         let editor = new GtEditorContent(editorStateCollection,null,this.statesMetadata);
-        editor.render($element[0],this.textForInit);
+        editor.render($element[0], this.text);
     }
 
 }
@@ -16,7 +16,8 @@ export const gtEditorContent = {
   bindings: {
       'states':'=',
       'statesMetadata': '=',
-      'textForInit':'='
+      'text':'=',
+      
   },
   templateUrl: '/components/gt-editor-content/gt-editor-content.html',
   controller: gtEditorContentController,

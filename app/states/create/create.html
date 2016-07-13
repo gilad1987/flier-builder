@@ -32,27 +32,42 @@
 
     <div ng-if="$ctrl.stateActive == 'upload-image'" class="upload-image">
         <div class="FlierGallery">
-            <img ng-repeat="imageSrc in $ctrl.images" src="{{imageSrc}}" ng-click="$ctrl.setStateInsertYourText(imageSrc)">
+            <img ng-repeat="tamplate in $ctrl.templates" ng-src="{{tamplate.imageSrc}}" ng-click="$ctrl.setStateInsertYourText(tamplate)">
         </div>
 
     </div>
 
-    <div ng-show="$ctrl.stateActive == 'insert-text'" class="add-your-text">
-        <div class="canvas" id="canvas">
-            <img src="{{$ctrl.backgroundImageFlier}}" >
-            <gt-editor
-                    posx="93"
-                    posy="344"
-                    text-for-init="[  {   'text':'Join the Israel JCC for a special Yom Ha\'atzmaut',},  {    'text':'br'  },  {    'text':'screening of'  },  {    'text':'Mekonen: the Journey of an African Jew:',    'italic':true,   'bold':true}]"></gt-editor>
+    <div ng-show="$ctrl.stateActive == 'insert-text'" class="AddYourText">
+        <div class="FlierPreview">
 
-            <img ng-src="" id="imageByHtml">
+            <h2>Build your flier</h2>
+
+            <div class="Canvas" id="canvas">
+                <img ng-src="{{$ctrl.currentTemplate.imageSrc}}" >
+
+                <gt-editor ng-repeat="editor in $ctrl.currentTemplate.editors"
+                           posx="editor.posx"
+                           posy="editor.posy"
+                           text="editor.text"
+                           editor-width="editor.width"
+                           editor-height="editor.height">
+                </gt-editor>
+
+            </div>
         </div>
 
-        <button ng-click="$ctrl.genPDF()">export</button>
+        <div class="Sidebar">
+
+            <h2>Your options</h2>
+
+            <div class="UploadImage">
+                 <i class="fa fa-cloud-upload" aria-hidden="true"></i> Upload your logo
+            </div>
+        </div>
     </div>
 
     <div ng-if="$ctrl.stateActive == 'export'"  class="export">
-
+        <img ng-src="" id="imageByHtml">
     </div>
 
 </div>
