@@ -36,8 +36,8 @@ export class CreateController {
 
         this.stateActive = 'upload-image';
 
-        this.stateActive = 'insert-text';
-        this.currentTemplate = this.templates[0];
+        // this.stateActive = 'insert-text';
+        // this.currentTemplate = this.templates[0];
 
     }
 
@@ -85,7 +85,6 @@ export class CreateController {
     }
     
     print(){
-
         var html  = "<html><head>" +
             "</head>" +
             "<body  style ='-webkit-print-color-adjust:exact;'>"+
@@ -93,29 +92,7 @@ export class CreateController {
             "</body>";
             var win = window.open("about:blank","_blank");
             win.document.write(html);
-
-
-        // this.canvas.toBlob((blob)=>{
-        //     reader.readAsDataURL(blob);
-        // },'image/jpeg');
-
-
-    }
-
-    genPDF(){
-
-        let element = document.getElementById('canvas');
-
-        html2canvas(document.getElementById('canvas'), {
-            onrendered: () => {
-                console.log(this);
-            }
-        });
-    }
-
-    download() {
-
-    }
+     }
 
 }
 

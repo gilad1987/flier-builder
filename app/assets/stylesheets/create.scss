@@ -1,5 +1,7 @@
 @import "breadcrumbs";
 
+
+
 .FlierGallery{
   img{
     float:left;
@@ -48,5 +50,9 @@
     background: #1486cc;
     border: none;
     color:white;
+
+    a{
+      color:white
+    }
   }
 }

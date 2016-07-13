@@ -48,7 +48,7 @@ export class GtDomUtil extends GtEvent{
                     node.classList.add(classes[i]);
                 }
             }
-            
+
             if(typeof classes == 'string'){
                 node.classList.add(classes);
             }
@@ -80,7 +80,7 @@ export class GtDomUtil extends GtEvent{
         if(id){
             node.setAttribute('id',id);
         }
-        
+
         return node;
     }
 
@@ -107,7 +107,13 @@ export class GtDomUtil extends GtEvent{
      */
     setStyle(node,key,value){
         if(!node) return;
-        node.style[key] = value;
+        let suffix='';
+
+        if(key=='font-size'){
+            suffix = 'px';
+        }
+
+        node.style[key] = value+suffix;
         return this;
     }
 
@@ -133,6 +139,7 @@ export class GtDomUtil extends GtEvent{
         let style;
         for(style in collection){
             let _preventStyle = preventStyle && preventStyle.indexOf(style) != -1;
+
             if(collection.hasOwnProperty(style) && !_preventStyle){
                 this.setStyle(node,style,collection[style].value);
             }
@@ -163,14 +170,14 @@ export class GtDomUtil extends GtEvent{
     }
 
     /**
-     * 
+     *
      * @param newNode
      * @param referenceNode
      */
     insertAfter(newNode, referenceNode) {
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
     }
-    
+
     /**
      *
      * @param {Element|Array|NodeList} elements
@@ -204,11 +211,11 @@ export class GtDomUtil extends GtEvent{
      */
     toggleClass(node,className){
         if(!node) return false;
-        
-        node.classList.contains(className) ? 
-            node.classList.remove(className) : 
+
+        node.classList.contains(className) ?
+            node.classList.remove(className) :
             node.classList.add(className);
-        
+
         return this;
     }
 
@@ -228,7 +235,7 @@ export class GtDomUtil extends GtEvent{
      */
     removeStyleHasNoInCollection(node, styleCollection){
         let key = 0,property;
-        
+
         while (property = node.style[key]){
             if( typeof styleCollection[property] == 'undefined'){
                 node.style[property] = null;
@@ -251,7 +258,7 @@ export class GtDomUtil extends GtEvent{
             node.style[property] = nodeHasStyle.style[property];
             key++;
         }
-        
+
         return node;
     }
 
@@ -321,11 +328,11 @@ export class GtDomUtil extends GtEvent{
 
         return result;
     }
-    
+
     getAllNodes(startNode, endNode ){
 
         let nodes = [];
-        
+
         var getNextNode = function(node, endNode, parentNodes){
 
             if(node==null){
@@ -349,7 +356,7 @@ export class GtDomUtil extends GtEvent{
             }
         }
         while ( startNode = getNextNode(startNode, endNode) );
-        
+
         return nodes;
     }
 

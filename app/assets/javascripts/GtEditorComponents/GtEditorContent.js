@@ -91,9 +91,9 @@ export class GtEditorContent extends GtEditor{
         if(startNode.nodeName != 'SPAN'){
             return;
         }
-        
+
         let stylesNotEqual = this.compareCurrentStyle(startNode);
-        
+
         if(length = stylesNotEqual.length){
             for(;i<length;i++){
                 currentStyleToUpdate = stylesNotEqual[i];
@@ -105,7 +105,7 @@ export class GtEditorContent extends GtEditor{
         }
 
     }
-    
+
     checkIfSplitRequired(event){
         return   (this.isStyleChanged || event.keyCode == 13);
     }
@@ -121,7 +121,7 @@ export class GtEditorContent extends GtEditor{
         if(this.editorContentElementInit &&  !this.isStyleChanged){ //#TODO add no enter key==13
             return;
         }
-        
+
         /**
          * 40 arrow bottom
          * 38 arrow top
@@ -166,7 +166,7 @@ export class GtEditorContent extends GtEditor{
 
         let {startNode, endNode, startOffset, endOffset} = this.gtSelection.getCursorInfo();
 
-        
+
         //#TODO fix bug when press enter and cursor in and of the line
 
         // keyCode 13 -> Enter key
@@ -179,7 +179,7 @@ export class GtEditorContent extends GtEditor{
                 frag = document.createDocumentFragment();
 
             //#TODO rewrite this part
-            
+
             startNodeLineElement = this.getLineElement(firstElement);
 
             if(firstElement!==lastElement){
@@ -254,15 +254,10 @@ export class GtEditorContent extends GtEditor{
         this.setStyleByCollection( wordwrapper, this.currentStyle ,['text-align']);
     }
 
-    getCurrentStyle(state){
-        return{
-            key:this.currentStyle[state.stateName].key,
-            value:this.currentStyle[state.stateName].value
-        }
-    }
+
 
     onStateChange(state, eventName){
-        
+
         this.updateCurrentStyleByState(state);
 
         if(eventName == 'toolbar:stateValueChange'){
@@ -325,7 +320,7 @@ export class GtEditorContent extends GtEditor{
                                 endNode = lastElement;
                             }
                         }
-                        
+
                         endOffset = (endOffset - startOffset);
                     }
 
