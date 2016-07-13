@@ -20,6 +20,8 @@ function config($compileProvider, $httpProvider, $locationProvider, $logProvider
 
   // Allows to access application URLs without the # sign
   $locationProvider.html5Mode(true);
+
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|data):/);
 }
 
 export default angular.module('FlierBuilder.config', [])

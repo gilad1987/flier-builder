@@ -66,8 +66,17 @@
         </div>
     </div>
 
-    <div ng-if="$ctrl.stateActive == 'export'"  class="export">
-        <img ng-src="" id="imageByHtml">
+    <div ng-if="$ctrl.stateActive == 'export'"  class="Export">
+
+        <button type="button">
+            <a ng-href="{{$ctrl.flierDataUrl}}" id="save-file" download="flier.jpg"><i class="fa fa-floppy-o" aria-hidden="true" ></i> Save your flier</a>
+        </button>
+
+
+        <button type="button" ng-click="$ctrl.print()">
+            <i class="fa fa-print" aria-hidden="true"></i> Print your flier
+        </button>
+
     </div>
 
 </div>

@@ -2,7 +2,7 @@
 export class CreateController {
 
     // @ngInject
-    constructor($log, $state) {
+    constructor($log, $state, $scope) {
         
         this.images = [
             'assets/images/states/create/BTH_Poster.jpg',
@@ -11,7 +11,10 @@ export class CreateController {
 
         ];
 
+        this.$scope = $scope;
         this.currentTemplate = null;
+        this.flierDataUrl = null;
+        this.canvas = null;
 
         this.templates = [
 
@@ -20,7 +23,7 @@ export class CreateController {
                 imageSrc:"assets/images/states/create/93657192-5beb-4933-a236-d9b17ee2cf92.jpg",
                 editors:[
                     {
-                        text:'<p style="text-align: center;"><span style="font-weight: 300;">Join the Israel JCC for a special Yom Ha\'atzmaut screening of Mekonen: the Journey of an African Jew: DATE: May 9, 2016 TIME: 8:00 PM LOCATION: 67 Independence Lane RSVP: Binyamin N – Israeljcc@gmail.com A new mini-documentary that follows the personal journey of Mekonen Abebe, a young African/Israeli Jewish soldier, as he returns to Africa to explore his roots, make peace with his past and embrace his future in Israel. mekonen.jerusalemu.org</span></p>',
+                        text:'<p style="text-align: center;"><span style="font-weight: 300;">Join the Israel JCC for a special Yom Ha\'atzmaut </span></p><p style="text-align: center;"><span style="font-weight: 300;">screening of </span><span style="font-weight: 700;">Mekonen: the Journey of an African Jew:</span></p><p style="text-align: center;"><span style="font-weight: 300;">​</span></p><p style="text-align: left;"><span style="font-weight: 300;"> </span><span style="font-weight: 700;">DATE: </span><span style="font-weight: 300;">May 9, 2016</span></p><p style="text-align: left;"><span style="font-weight: 300;">​</span></p><p style="text-align: left;"><span style="font-weight: 700;">TIME:</span><span style="font-weight: 300;"> 8:00 PM </span></p><p style="text-align: left;"><span style="font-weight: 300;">​</span></p><p style="text-align: left;"><span style="font-weight: 700;">LOCATION:</span><span style="font-weight: 300;"> 67 Independence Lane </span></p><p style="text-align: center;"><span style="font-weight: 300;">​</span></p><p style="text-align: left;"><span style="font-weight: 700;">RSVP:</span><span style="font-weight: 300;"> Binyamin N – Israeljcc@gmail.com </span></p><p style="text-align: center;"><span style="font-weight: 300;">​</span></p><p style="text-align: center;"><span style="font-weight: 300;">A new mini-documentary that follows the personal journey of Mekonen Abebe, a young African/Israeli Jewish soldier, as he returns to Africa to explore his roots, make peace with his past and embrace his future in Israel. mekonen.jerusalemu.org</span></p>',
                         posx:"80",
                         posy:"358",
                         width:"523",
@@ -65,10 +68,38 @@ export class CreateController {
     }
 
     setStateExport(){
-        if(this.backgroundImageFlier==null){
+        if(this.currentTemplate==null){
             return;
         }
-        this.stateActive = 'export';
+
+        html2canvas(document.getElementById('canvas'), {
+            onrendered: (canvas) => {
+                this.flierDataUrl = canvas.toDataURL('image/jpeg');
+                this.canvas = canvas;
+                this.stateActive = 'export';
+                this.$scope.$apply();
+            }
+        });
+
+
+    }
+    
+    print(){
+
+        var html  = "<html><head>" +
+            "</head>" +
+            "<body  style ='-webkit-print-color-adjust:exact;'>"+
+            "<img src=\"" + this.flierDataUrl + "\" onload=\"javascript:window.print();\"/>" +
+            "</body>";
+            var win = window.open("about:blank","_blank");
+            win.document.write(html);
+
+
+        // this.canvas.toBlob((blob)=>{
+        //     reader.readAsDataURL(blob);
+        // },'image/jpeg');
+
+
     }
 
     genPDF(){
@@ -76,10 +107,13 @@ export class CreateController {
         let element = document.getElementById('canvas');
 
         html2canvas(document.getElementById('canvas'), {
-            onrendered: function(canvas) {
-                document.getElementById('imageByHtml').src = canvas.toDataURL('image/jpeg');
+            onrendered: () => {
+                console.log(this);
             }
         });
+    }
+
+    download() {
 
     }
 
