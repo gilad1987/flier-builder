@@ -4,6 +4,7 @@ import angular from 'angular';
 
 import '../node_modules/font-awesome/scss/font-awesome.scss';
 import 'assets/stylesheets/application.scss';
+import 'assets/javascripts/html2canvas/build/html2canvas.js';
 
 import Models     from 'models/models';
 import Services   from 'services/services';
@@ -18,6 +19,7 @@ import States     from 'states/states';
 // If you need to use lazy loading, you will probably need
 // to remove these two lines and explicitly require htmls
 const templates = require.context(__dirname, true, /\.html$/);
+const images = require.context(__dirname+'/assets/images', true, /\.jpg/);
 
 templates.keys().forEach(templates);
 

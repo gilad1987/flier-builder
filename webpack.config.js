@@ -103,7 +103,7 @@ const config = {
 
       {
         test: /\.(jpe?g|png|gif|svg)(\?.*)?$/i,
-        loader: 'url?limit=5120&name=[path][name].[hash].[ext]'
+        loader: 'url?limit=5120&name=[path][name].[ext]'
       },
 
       // Create AngularJS templates from HTMLs
