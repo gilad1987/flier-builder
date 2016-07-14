@@ -5,6 +5,7 @@ import angular from 'angular';
 import '../node_modules/font-awesome/scss/font-awesome.scss';
 import 'assets/stylesheets/application.scss';
 import 'assets/javascripts/html2canvas/build/html2canvas.js';
+// require('expose?jsPDF!assets/javascripts/jspdf/dist/jspdf.debug.js');
 
 import Models     from 'models/models';
 import Services   from 'services/services';

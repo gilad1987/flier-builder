@@ -23,7 +23,7 @@
             <li>
                 <a ng-class="{'active': $ctrl.checkStateExportIsActive()}" ng-click="$ctrl.setStateExport()">
                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                    Export to PDF
+                    Export
                 </a>
             </li>
 
@@ -37,10 +37,9 @@
 
     </div>
 
-    <div ng-show="$ctrl.stateActive == 'insert-text'" class="AddYourText">
+    <div ng-if="$ctrl.stateActive == 'insert-text'" class="AddYourText">
         <div class="FlierPreview">
 
-            <h2>Build your flier</h2>
 
             <div class="Canvas" id="canvas">
                 <img ng-src="{{$ctrl.currentTemplate.imageSrc}}" >
@@ -56,14 +55,14 @@
             </div>
         </div>
 
-        <div class="Sidebar">
-
-            <h2>Your options</h2>
-
-            <div class="UploadImage">
-                 <i class="fa fa-cloud-upload" aria-hidden="true"></i> Upload your logo
-            </div>
-        </div>
+        <!--<div class="Sidebar">-->
+<!---->
+            <!--<h2>Your options</h2>-->
+<!---->
+            <!--<div class="UploadImage">-->
+                 <!--<i class="fa fa-cloud-upload" aria-hidden="true"></i> Upload your logo-->
+            <!--</div>-->
+        <!--</div>-->
     </div>
 
     <div ng-if="$ctrl.stateActive == 'export'"  class="Export">

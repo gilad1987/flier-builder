@@ -2,7 +2,7 @@ import { GtState } from '../../assets/javascripts/GtEditorComponents/GtState';
 
 class gtEditorController {
     // @ngInject
-    constructor($log, $element) {
+    constructor($log, $element, $document) {
 
         this.states = [
             new GtState('font-weight',true),
@@ -11,6 +11,22 @@ class gtEditorController {
             new GtState('font-size',true),
             new GtState('text-align',true)
         ];
+
+        $document[0].addEventListener('click',(event)=>{
+            let target = event.target;
+            let parent = target.closest('gt-editor');
+            let GtTextEditor = $element[0].getElementsByClassName('GtTextEditor')[0];
+            let contentElement = $element[0].getElementsByClassName('content')[0];
+
+            if(parent && parent===$element[0]){
+                GtTextEditor.classList.add('active');
+                contentElement.setAttribute("contentEditable", true);
+                contentElement.focus();
+            }else{
+                GtTextEditor.classList.remove('active');
+                contentElement.setAttribute("contentEditable", false);
+            }
+        });
 
         this.statesMetadata = {
 

@@ -102,6 +102,7 @@ const config = {
       },
 
       {
+        //loader: 'url?limit=5120&name=[path][name].[hash].[ext]'
         test: /\.(jpe?g|png|gif|svg)(\?.*)?$/i,
         loader: 'url?limit=5120&name=[path][name].[ext]'
       },

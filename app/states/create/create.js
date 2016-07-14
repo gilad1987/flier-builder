@@ -23,7 +23,7 @@ export class CreateController {
                 imageSrc:"assets/images/states/create/93657192-5beb-4933-a236-d9b17ee2cf92.jpg",
                 editors:[
                     {
-                        text:'<p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">Join the Israel JCC for a special Yom Ha\'atzmaut</span><span style="font-weight: 300; font-size: 16px;"> </span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">screening of</span><span style="font-weight: 300; font-size: 16px;"> </span><span style="font-weight: 700; font-size: 16px;">Mekonen: the Journey of an African Jew:</span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: left;"><span style="font-weight: 300; font-size: 16px;"> </span><span style="font-weight: 700; font-size: 16px;">DATE: </span><span style="font-weight: 300; font-size: 16px;">May 9, 2016</span></p><p style="text-align: left;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: left;"><span style="font-weight: 700; font-size: 16px;">TIME:</span><span style="font-weight: 300; font-size: 16px;"> 8:00 PM </span></p><p style="text-align: left;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: left;"><span style="font-weight: 700; font-size: 16px;">LOCATION:</span><span style="font-weight: 300; font-size: 16px;"> 67 Independence Lane </span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: left;"><span style="font-weight: 700; font-size: 16px;">RSVP:</span><span style="font-weight: 300; font-size: 16px;"> Binyamin N – Israeljcc@gmail.com </span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 12px;">A new mini-documentary that follows the personal journey of Mekonen Abebe, a young African/Israeli Jewish soldier, as he returns to Africa to explore his roots, make peace with his past and embrace his future in Israel. mekonen.jerusalemu.org</span></p>',
+                        text:'<p style="text-align: center;"><span style="font-weight: 300; font-size: 20px;">Join the Israel JCC for a special Yom Ha\'atzmaut</span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 20px;">screening of&nbsp;</span><span style="font-weight: 700; font-size: 20px;">Mekonen: the Journey of an African Jew:</span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: left;"><span style="font-weight: 300; font-size: 16px;"> </span><span style="font-weight: 700; font-size: 16px;">DATE: </span><span style="font-weight: 300; font-size: 16px;">May 9, 2016</span></p><p style="text-align: left;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: left;"><span style="font-weight: 700; font-size: 16px;">TIME:</span><span style="font-weight: 300; font-size: 16px;"> 8:00 PM </span></p><p style="text-align: left;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: left;"><span style="font-weight: 700; font-size: 16px;">LOCATION:</span><span style="font-weight: 300; font-size: 16px;"> 67 Independence Lane </span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: left;"><span style="font-weight: 700; font-size: 16px;">RSVP:</span><span style="font-weight: 300; font-size: 16px;"> Binyamin N – Israeljcc@gmail.com </span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 16px;">​</span></p><p style="text-align: center;"><span style="font-weight: 300; font-size: 12px;">A new mini-documentary that follows the personal journey of Mekonen Abebe, a young African/Israeli Jewish soldier, as he returns to Africa to explore his roots, make peace with his past and embrace his future in Israel. mekonen.jerusalemu.org</span></p>',
                         posx:"80",
                         posy:"358",
                         width:"523",
@@ -85,13 +85,33 @@ export class CreateController {
     }
     
     print(){
-        var html  = "<html><head>" +
-            "</head>" +
-            "<body  style ='-webkit-print-color-adjust:exact;'>"+
-            "<img src=\"" + this.flierDataUrl + "\" onload=\"javascript:window.print();\"/>" +
-            "</body>";
-            var win = window.open("about:blank","_blank");
-            win.document.write(html);
+        // var html  = "<html><head>" +
+        //     "</head>" +
+        //     "<body  style ='-webkit-print-color-adjust:exact;'>"+
+        //     "<img src=\"" + this.flierDataUrl + "\" onload=\"javascript:window.print();\"/>" +
+        //     "</body>";
+        //     var win = window.open("about:blank","_blank");
+        //     win.document.write(html);
+        let printPdf = function (url) {
+            let iframe  = document.createElement('iframe');
+                document.body.appendChild(iframe);
+
+                iframe.style.display = 'none';
+                iframe.onload = function() {
+                    setTimeout(function() {
+                        iframe.focus();
+                        iframe.contentWindow.print();
+                    }, 1);
+                };
+
+            iframe.src = url;
+        };
+
+        var doc = new jsPDF("p", "px", "a4");
+        doc.addImage(this.flierDataUrl , 'JPEG', 0, 0);
+        let blob = doc.output('blob');
+        let url = URL.createObjectURL(blob);
+        printPdf(url);
      }
 
 }
