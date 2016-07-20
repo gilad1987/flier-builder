@@ -322,8 +322,15 @@ export class GtDomUtil extends GtEvent{
 
         return result;
     }
-    
-    getAllNodes(startNode, endNode ){
+
+    /**
+     * @desc Get all nodes between startNode to endNode.
+     * @param {Element} startNode
+     * @param {Element} endNode
+     * @param {Element.nodeName} [nodeName]
+     * @returns {Array}
+     */
+    getAllNodes(startNode, endNode, nodeName){
 
         let nodes = [];
         
@@ -345,7 +352,7 @@ export class GtDomUtil extends GtEvent{
         };
 
         do {
-            if(startNode.nodeName == 'SPAN'){
+            if(nodeName && startNode.nodeName == nodeName){
                 nodes.push(startNode);
             }
         }

@@ -18,7 +18,9 @@ class gtEditorController {
             let GtTextEditor = $element[0].getElementsByClassName('GtTextEditor')[0];
             let contentElement = $element[0].getElementsByClassName('content')[0];
 
-            if(parent && parent===$element[0]){
+            let isActive = parent && parent===$element[0];
+
+            if(isActive){
                 GtTextEditor.classList.add('active');
                 contentElement.setAttribute("contentEditable", true);
                 contentElement.focus();
