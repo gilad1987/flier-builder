@@ -3,10 +3,24 @@
 
 
 .FlierGallery{
+  max-width: 889px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #f3f5fa;
+  text-align: center;
+
+  .item{
+    display: inline-block;
+    overflow: hidden;
+    padding: 40px 40px 0;
+    max-width: 328px;
+    .title{
+      color:#144d9d;
+    }
+  }
+
   img{
-    float:left;
-    max-width:250px;
-    margin: 20px;
+    width:100%;
     border:3px solid transparent;
     &:hover{
       border-color: #4a4a4a;
@@ -48,16 +62,46 @@
 }
 
 .Export{
+  max-width: 889px;
+  padding: 0 178px;
+  margin: 0 auto;
+  overflow: hidden;
+
   button{
     display: block;
     margin: 20px auto;
     padding: 15px 30px;
-    background: #1486cc;
+    background: #ff6d15;
     border: none;
     color:white;
 
     a{
       color:white
+    }
+  }
+
+  .Preview{
+    float: left;
+    position:relative;
+    cursor: pointer;
+
+    .edit{
+      position: absolute;
+      width: 100%;
+      height:100%;
+      background: rgba(0, 0, 0, 0.45);;
+      display: none;
+      top:0;
+      left:0;
+    }
+    &:hover {
+      .edit{
+        display: block;
+      }
+    }
+    img{
+      display: block;
+      max-width: 300px;
     }
   }
 }

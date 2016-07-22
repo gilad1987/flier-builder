@@ -17,7 +17,7 @@
             <li>
                 <a ng-class="{'active': $ctrl.checkStateInsertTextIsActive()}" ng-click="$ctrl.setStateInsertYourText()">
                     <i class="fa fa-text-width" aria-hidden="true"></i>
-                    Update your text
+                    Update your details
                 </a>
             </li>
             <li>
@@ -32,7 +32,10 @@
 
     <div ng-if="$ctrl.stateActive == 'upload-image'" class="upload-image">
         <div class="FlierGallery">
-            <img ng-repeat="tamplate in $ctrl.templates" ng-src="{{tamplate.imageSrc}}" ng-click="$ctrl.setStateInsertYourText(tamplate)">
+            <div class="item" ng-repeat="tamplate in $ctrl.templates" ng-click="$ctrl.setStateInsertYourText(tamplate)">
+                <img  ng-src="{{::tamplate.imageSrc}}" >
+                <div class="title">{{::tamplate.title}}</div>
+            </div>
         </div>
 
     </div>
@@ -42,7 +45,7 @@
 
 
             <div class="Canvas" id="canvas">
-                <img ng-src="{{$ctrl.currentTemplate.imageSrc}}" >
+                <img ng-if="$ctrl.currentTemplate.imageSrc" ng-src="{{$ctrl.currentTemplate.imageSrc}}" >
 
                 <gt-editor ng-repeat="editor in $ctrl.currentTemplate.editors"
                            posx="editor.posx"
@@ -67,13 +70,27 @@
 
     <div ng-if="$ctrl.stateActive == 'export'"  class="Export">
 
+        <div class="Preview" ng-click="$ctrl.setStateInsertYourText()">
+            <img ng-if="$ctrl.flierDataUrl" src="{{$ctrl.flierDataUrl}}">
+            <div class="edit">
+                <div class="table">
+                    <div class="cell">
+                        Edit
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <button type="button">
-            <a ng-href="{{$ctrl.flierDataUrl}}" id="save-file" download="flier.jpg"><i class="fa fa-floppy-o" aria-hidden="true" ></i> Save your flier</a>
+            <a ng-href="{{$ctrl.flierDataUrl}}" id="save-file" download="flier.jpg">
+                <i class="fa fa-floppy-o" aria-hidden="true" ></i>
+                Save
+            </a>
         </button>
 
 
         <button type="button" ng-click="$ctrl.print()">
-            <i class="fa fa-print" aria-hidden="true"></i> Print your flier
+            <i class="fa fa-print" aria-hidden="true"></i> Print
         </button>
 
     </div>

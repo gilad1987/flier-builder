@@ -133,6 +133,7 @@ const config = {
 if (process.env.NODE_ENV === 'development') {
   config.devtool = '#inline-source-map';
 
+
   // config.plugins.push(
   //     new ExtractTextPlugin("app/assets/stylesheets/main.css",{
   //       allChunks: true

@@ -12,6 +12,25 @@ class gtEditorController {
             new GtState('text-align',true)
         ];
 
+        this.statesGroup = [];
+
+        this.statesGroup.push({
+            'font-weight': this.states[0],
+            'text-decoration': this.states[1],
+            'font-style': this.states[2],
+        });
+
+        this.statesGroup.push({
+            'font-size': this.states[3],
+        });
+
+        this.statesGroup.push({
+            'text-align': this.states[4],
+        });
+
+        // this.statesGroup = null;
+
+
         $document[0].addEventListener('click',(event)=>{
             let target = event.target;
             let parent = target.closest('gt-editor');
@@ -132,6 +151,7 @@ class gtEditorController {
 
             'text-align':{
                 type:'group', // options --> toggle / group / list
+                label:'align',
                 style: {
                     key: "text-align",
                     values: ['left', 'right','center','justify']

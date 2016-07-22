@@ -2,11 +2,6 @@ $crumbs-back:#F3F5FA;
 $text-color:#8093A7;
 
 
-body {
-  font-family: Helvetica;
-  background: #FFF;
-}
-
 .crumbs {
   margin:30px auto;
   text-align: center;
@@ -74,7 +69,9 @@ body {
 
 
 .crumbs ul li:first-child a {
-  border-top-left-radius: 10px; border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+
 }
 .crumbs ul li:first-child a:before {
   display: none;
@@ -82,7 +79,9 @@ body {
 
 .crumbs ul li:last-child a {
   padding-right: 40px;
-  border-top-right-radius: 10px; border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  margin-right:0;
 }
 .crumbs ul li:last-child a:after {
   display: none;
@@ -90,13 +89,13 @@ body {
 
 //.crumbs ul li a:hover,
 .crumbs ul li a.active {
-  background: #357DFD;
+  background: #1486cc;
   color:#fff;
 }
 //.crumbs ul li a:hover:after,
 .crumbs ul li a.active:after
 {
-  border-left-color: #357DFD;
+  border-left-color: #1486cc;
   color:#fff;
 }
 

@@ -8,14 +8,15 @@ class gtToolbarController {
         let toolbarFunctionalityCollection = new GtFunctionalityCollection();
         toolbarFunctionalityCollection.addStateCollection(this.states);
         let toolbar = new GtToolbar(toolbarFunctionalityCollection,null,this.statesMetadata);
-        toolbar.render($element[0]);
+        toolbar.render($element[0],this.statesGroup);
     }
 }
 
 export const gtToolbar = {
     bindings: {
         'states':'=',
-        'statesMetadata': '='
+        'statesMetadata': '=',
+        'statesGroup': '='
     },
     require:'gtEditorController',
     templateUrl: '/components/gt-toolbar/gt-toolbar.html',
