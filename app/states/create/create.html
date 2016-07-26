@@ -1,3 +1,7 @@
+<div class="FlayerLogo">
+    <img src="/assets/svgs/JUFlyerBuilderLogo.svg">
+</div>
+
 <div ng-controller="CreateController as $ctrl">
     <div class="crumbs">
         <ul>
@@ -9,21 +13,21 @@
 
             <li>
                 <a class="active" ng-click="$ctrl.setStateUploadYouImage()">
-                    <i class="fa fa-cloud-upload" aria-hidden="true"></i>
-                    Upload your image
+                    <i class="fa fa-picture-o" aria-hidden="true"></i>
+                    Pick Flyer Template
                 </a>
             </li>
 
             <li>
                 <a ng-class="{'active': $ctrl.checkStateInsertTextIsActive()}" ng-click="$ctrl.setStateInsertYourText()">
                     <i class="fa fa-text-width" aria-hidden="true"></i>
-                    Update your details
+                    Customize Flyer
                 </a>
             </li>
             <li>
                 <a ng-class="{'active': $ctrl.checkStateExportIsActive()}" ng-click="$ctrl.setStateExport()">
                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                    Export
+                    Review and Save
                 </a>
             </li>
 
@@ -70,28 +74,30 @@
 
     <div ng-if="$ctrl.stateActive == 'export'"  class="Export">
 
-        <div class="Preview" ng-click="$ctrl.setStateInsertYourText()">
-            <img ng-if="$ctrl.flierDataUrl" src="{{$ctrl.flierDataUrl}}">
-            <div class="edit">
-                <div class="table">
-                    <div class="cell">
-                        Edit
+        <p>Here is a preview of your Flyer. You can either click to <span class="bold">Edit</span> it or choose to <span class="bold">Save</span> or <span class="bold">Print</span> your file.  </p>
+
+        <div class="Actions">
+            <div class="Preview" ng-click="$ctrl.setStateInsertYourText()">
+                <img ng-if="$ctrl.flierDataUrl" ng-src="{{$ctrl.flierDataUrl}}">
+                <div class="edit">
+                    <div class="table">
+                        <div class="cell">
+                            Edit
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <button type="button">
-            <a ng-href="{{$ctrl.flierDataUrl}}" id="save-file" download="flier.jpg">
+            <a ng-href="{{$ctrl.flierDataUrl}}" id="save-file" download="{{$ctrl.getFlayerFileName()}}.jpg" class=" Button u-Radios-width5 Button--orange-primary Button--secondary"  >
                 <i class="fa fa-floppy-o" aria-hidden="true" ></i>
-                Save
+                <span>Save</span>
             </a>
-        </button>
 
-
-        <button type="button" ng-click="$ctrl.print()">
-            <i class="fa fa-print" aria-hidden="true"></i> Print
-        </button>
+            <button ng-click="$ctrl.print()"  class=" Button u-Radios-width5 Button--orange-primary Button--secondary"  >
+                <i class="fa fa-print" aria-hidden="true"></i>
+                <span>Print</span>
+            </button>
+        </div>
 
     </div>
 

@@ -1,7 +1,61 @@
-.home-link{
-  font-size: 70px;
-  text-align: center;
-  margin: 150px auto;
-  display: block;
-  line-height: 100%;
+@import "ju-ui/base/colors";
+
+.Home{
+  text-align:center;
+
+  header{
+    padding:30px 0;
+    color:white;
+    background:#{$color-blue-primary};
+
+    h4{
+      margin:0;
+      font-size:24px;
+      font-weight: 100;
+    }
+    h1{
+      margin:10px auto;
+      font-size:70px;
+      line-height: initial;
+    }
+  }
+
+  section{
+    display: inline-block;
+    padding:74px 0;
+
+    p{
+      font-size: 20px;
+    }
+
+    .Steps{
+
+      margin:64px auto;
+
+      .Step{
+        display: inline-block;
+        position: relative;
+        margin: 0 20px;
+
+        .Index{
+          font-size: 19px;
+          background:#{$color-blue-primary};
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          padding-top: 14px;
+          color: white;
+          position: absolute;
+          top: -3px;
+          left: 4px;
+          border: 2px solid white;
+
+        }
+
+        p{
+          font-size:15px;
+        }
+      }
+    }
+  }
 }

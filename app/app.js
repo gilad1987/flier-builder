@@ -21,6 +21,7 @@ import States     from 'states/states';
 // to remove these two lines and explicitly require htmls
 const templates = require.context(__dirname, true, /\.html$/);
 const images = require.context(__dirname+'/assets/images', true, /\.jpg/);
+const svgs = require.context(__dirname+'/assets/svgs', true, /\.svg/);
 
 templates.keys().forEach(templates);
 

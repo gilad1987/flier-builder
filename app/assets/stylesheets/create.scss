@@ -1,27 +1,65 @@
 @import "breadcrumbs";
 
-
+.FlayerLogo{
+  max-width: 400px;
+  margin: 40px auto;
+}
 
 .FlierGallery{
-  max-width: 889px;
-  margin: 0 auto;
+  max-width: 950px;
+  margin: 0 auto 50px;
   overflow: hidden;
   background: #f3f5fa;
   text-align: center;
+  padding: 40px 0 0;
+  border-radius: 4px;
+  position: relative;
 
   .item{
     display: inline-block;
     overflow: hidden;
-    padding: 40px 40px 0;
-    max-width: 328px;
+    margin: 0 40px;
+    max-width: 240px;
+    //height: 400px;
+
+    position: relative;
+
     .title{
       color:#144d9d;
+      height:50px;
+
+      //width: 100%;
+      //color: white;
+      //padding: 40px 0;
+      ///* height: 50px; */
+      //position: absolute;
+      //bottom: -130px;
+      //background: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…EiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+");
+      //background: -moz-linear-gradient(top,rgba(255,255,255,0) 0%,rgba(0,0,0,1) 100%);
+      //background: -webkit-linear-gradient(top,rgba(255,255,255,0) 0%,rgba(0,0,0,1) 100%);
+      //background: linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(0,0,0,1) 100%);
+      //filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff',endColorstr='#000000',GradientType=0);
+      //
+      //-webkit-transition: bottom 300ms ease-out;
+      //-moz-transition: bottom 300ms ease-out;
+      //-o-transition: bottom 300ms ease-out;
+      //transition: bottom 300ms ease-out;
+
+
     }
+
+    //&:hover{
+    //  .title{
+    //    bottom:0;
+    //  }
+    //}
   }
 
   img{
     width:100%;
     border:3px solid transparent;
+    margin-bottom: 10px;
+
     &:hover{
       border-color: #4a4a4a;
       cursor: pointer;
@@ -47,6 +85,7 @@
   .Canvas {
     position: relative;
     img{
+      max-width: 900px;
       display: block;
     }
   }
@@ -63,27 +102,34 @@
 
 .Export{
   max-width: 889px;
-  padding: 0 178px;
   margin: 0 auto;
   overflow: hidden;
 
-  button{
-    display: block;
-    margin: 20px auto;
-    padding: 15px 30px;
-    background: #ff6d15;
-    border: none;
-    color:white;
+  p{
+    margin:20px 0 50px 0;
+    font-size:17px;
+    text-align: center;
 
-    a{
-      color:white
-    }
+  }
+  .Actions{
+    padding: 0 178px;
+    overflow: hidden;
+    margin-bottom: 100px;
+  }
+
+  button,a{
+    margin: 20px auto;
+  }
+
+  a{
+    margin-top:0
   }
 
   .Preview{
     float: left;
     position:relative;
     cursor: pointer;
+    margin-right: 65px;
 
     .edit{
       position: absolute;
