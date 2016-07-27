@@ -8,6 +8,22 @@
     color:white;
     background:#{$color-blue-primary};
 
+
+    .WhiteLogoWrapper{
+      max-width: 800px;
+      overflow: hidden;
+      margin: 20px auto 34px;
+
+      a{
+        display: block;
+
+        img{
+          max-width:70px;
+          float: left;
+        }
+      }
+    }
+
     h4{
       margin:0;
       font-size:24px;
