@@ -59,7 +59,6 @@ export class GtToolbar  extends GtEditor{
     updateToolBarElements(state, button){
 
         let parent;
-
         this.updateCurrentStyleByState(state);
 
         parent = this.wrapperElement.querySelectorAll('[data-state-name="'+state.stateName+'"]')[0];
@@ -82,7 +81,11 @@ export class GtToolbar  extends GtEditor{
 
         if(this.hasClass(parent,'list')){
             let label = parent.querySelectorAll('span.label')[0];
-            label.innerHTML = this.getCurrentStyle(state).value;
+
+            label.innerHTML = button ?
+                button.innerHTML :
+                this.getCurrentStyle(state).value;
+
             if(button){
                 this.toggleClass(parent,'active');
             }

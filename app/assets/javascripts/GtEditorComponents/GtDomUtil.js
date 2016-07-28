@@ -94,8 +94,20 @@ export class GtDomUtil extends GtEvent{
     hasStyle(node,key,value){
         // console.log('hasStyle');
         if(!node) return false;
-        let s = node.style[key];
         return node.style[key] == value || (value=='' && typeof s == 'undefined');
+    }
+
+    isEqualHexToRgb(hex,rgb){
+
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        result = result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+
+        return result == rgb;
+
     }
 
     /**
@@ -107,6 +119,8 @@ export class GtDomUtil extends GtEvent{
      */
     setStyle(node,key,value){
         if(!node) return;
+
+        console.log(value);
         node.style[key] = value;
         return this;
     }

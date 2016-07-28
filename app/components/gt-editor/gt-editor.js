@@ -9,10 +9,15 @@ class gtEditorController {
             new GtState('text-decoration',true),
             new GtState('font-style',true),
             new GtState('font-size',true),
-            new GtState('text-align',true)
+            new GtState('text-align',true),
+            new GtState('color',true),
         ];
 
         this.statesGroup = [];
+
+        this.statesGroup.push({
+            'color': this.states[5],
+        });
 
         this.statesGroup.push({
             'font-weight': this.states[0],
@@ -27,6 +32,8 @@ class gtEditorController {
         this.statesGroup.push({
             'text-align': this.states[4],
         });
+
+
 
         // this.statesGroup = null;
 
@@ -139,10 +146,64 @@ class gtEditorController {
                                     title:'font-size: '+i+'px'
                                 },
 
-                                icon:i
+                                icon:i+'px'
                             };
                         }
                     }
+
+                    return buttons;
+                })()
+
+            },
+
+            'color':{
+                type:'list', // options --> toggle / group / list
+                label:'color',
+                style: {
+                    key: "color",
+                    values: (function(){
+                        let values = [];
+
+                        ['#2088ca','#184f9a','#222222','#444444','#fd6d2a'].forEach(function(hex){
+
+                            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                            result = result ? {
+                                r: parseInt(result[1], 16),
+                                g: parseInt(result[2], 16),
+                                b: parseInt(result[3], 16)
+                            } : null;
+
+                            values.push( 'rgb('+result['r']+', '+result['g']+', '+result['b']+')' );
+                        });
+
+                        return values;
+                    })()
+                },
+                buttons: (function(){
+                    let buttons = {};
+                    ['#2088ca','#184f9a','#222222','#444444','#fd6d2a'].forEach(function(hex,index){
+
+                        let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                        let rgb;
+
+                        result = result ? {
+                            r: parseInt(result[1], 16),
+                            g: parseInt(result[2], 16),
+                            b: parseInt(result[3], 16)
+                        } : null;
+
+                        rgb = 'rgb('+result['r']+', '+result['g']+', '+result['b']+')';
+
+                        buttons[rgb] = {
+                            nodeName:'button',
+                            elementAttrs:{
+                                type:'button',
+                                title:'color: '+hex
+                            },
+
+                            icon:'<span class="color" style="color: '+rgb+'">A</span>'
+                        }
+                    });
 
                     return buttons;
                 })()

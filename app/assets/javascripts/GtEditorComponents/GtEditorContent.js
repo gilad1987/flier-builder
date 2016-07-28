@@ -90,17 +90,27 @@ export class GtEditorContent extends GtEditor{
         }
 
         let stylesNotEqual = this.compareCurrentStyle(startNode);
+        let state,
+            button;
 
         if(length = stylesNotEqual.length){
             for(;i<length;i++){
                 currentStyleToUpdate = stylesNotEqual[i];
-                stateData = this.getStateData(currentStyleToUpdate.state);
+                state = currentStyleToUpdate.state;
+                stateData = this.getStateData(state);
                 newIndex = stateData.style.values.indexOf(currentStyleToUpdate.nodeStyleValue);
-                currentStyleToUpdate.state.setCurrentIndex(newIndex);
-                currentStyleToUpdate.state.action('editor:updateStateByCurrentNode');
+                // button = this.getStateButton(state);
+                state.setCurrentIndex(newIndex);
+                state.action('editor:updateStateByCurrentNode',button);
             }
         }
+    }
 
+    getStateButton(state){
+        let wrapper = document.querySelector('[data-state-name="'+state.stateName+'"]');
+        let s = '[data-selection-index="'+state.getCurrentIndex()+'"]';
+
+        return wrapper && wrapper.querySelector(s);
     }
 
     checkIfSplitRequired(event){

@@ -76,8 +76,8 @@ export class CreateController {
 
         this.stateActive = 'upload-image';
 
-        // this.stateActive = 'insert-text';
-        // this.currentTemplate = this.templates[0];
+        this.stateActive = 'insert-text';
+        this.currentTemplate = this.templates[0];
 
     }
 
