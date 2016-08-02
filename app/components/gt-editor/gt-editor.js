@@ -10,14 +10,14 @@ class gtEditorController {
             new GtState('font-style',true),
             new GtState('font-size',true),
             new GtState('text-align',true),
-            new GtState('color',true),
+            // new GtState('color',true),
         ];
 
         this.statesGroup = [];
 
-        this.statesGroup.push({
-            'color': this.states[5],
-        });
+        // this.statesGroup.push({
+        //     'color': this.states[5],
+        // });
 
         this.statesGroup.push({
             'font-weight': this.states[0],
