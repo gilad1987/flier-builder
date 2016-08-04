@@ -9,20 +9,17 @@
     background:#{$color-blue-primary};
 
 
-    .WhiteLogoWrapper{
-      max-width: 800px;
-      overflow: hidden;
-      margin: 20px auto 34px;
+    .inner{
+      max-width: 487px;
+      margin:55px auto;
 
-      a{
-        display: block;
-
-        img{
-          max-width:70px;
-          float: left;
-        }
+      img{
+        max-width:75px;
+        position: relative;
+        top:11px;
       }
     }
+
 
     h4{
       margin:0;
@@ -31,7 +28,7 @@
     }
     h1{
       margin:10px auto;
-      font-size:70px;
+      font-size:50px;
       line-height: initial;
     }
   }

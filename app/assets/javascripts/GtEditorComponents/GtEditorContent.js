@@ -38,10 +38,10 @@ export class GtEditorContent extends GtEditor{
 
     /**
      * @param {Element} [editorParentElement]
-     * @param {Array} [text]
+     * @param {String} [text]
      * @returns {GtEditor}
      */
-    render(editorParentElement,text){
+    render(editorParentElement,text, onChange){
         this.wrapperElement = editorParentElement;
         this.editorContentElement = this.createNewNode('div', null, 'content', null, null, null, {"contenteditable":true});
 
@@ -62,13 +62,18 @@ export class GtEditorContent extends GtEditor{
             this.onSelectionchange(event);
         });
 
+        this.editorContentElement.addEventListener('keyup',(event) => {
+            text.text = this.editorContentElement.innerHTML;
+            onChange();
+        });
+
 
         // this.editorContentElement.innerHTML = '<p style="text-align: left;"><span style="font-weight: 300;">moshe</span><span style="font-weight: 300; text-decoration: underline;">​gilad</span><span style="font-weight: 700; text-decoration: underline;">​takoni</span></p><p style="text-align: left;"><span style="font-weight: 700; text-decoration: underline;">jermi</span><span style="font-weight: 700;">​as</span></p><p style="text-align: left;"><span style="font-weight: 700;">chanie</span><span style="font-weight: 300;">​edri</span></p><ul><li><ul><li><span style="font-weight: 300;">asd</span><span style="font-weight: 700;">​ariel</span></li></ul></li></ul> <p style="text-align: left;"><span style="font-weight: 700;">gilad</span><span style="font-weight: 700; text-decoration: underline;">​takoni</span></p><p style="text-align: left;"><span style="font-weight: 700; text-decoration: underline;">sara</span><span style="font-weight: 300; text-decoration: underline;">​blumental</span><span style="font-weight: 300;">​alexmayler</span><span style="font-weight: 300;">​</span></p>';
         // this.editorContentElement.innerHTML = '<p style="text-align: left;"><span style="font-weight: 300;">Join the Israel JCC for a special Yom Ha\'atzmaut screening of Mekonen: the Journey of an African Jew: DATE: May 9, 2016 TIME: 8:00 PM LOCATION: 67 Independence Lane RSVP: Binyamin N – Israeljcc@gmail.com</span></p>';
         // this.editorContentElement.innerHTML = '<p style="text-align: center;"><span style="font-weight: 300;">Join the Israel JCC for a special Yom Ha\'atzmaut </span></p><p style="text-align: center;"><span style="font-weight: 300;">screening of </span><span style="font-weight: 700;">Mekonen: the Journey of an African Jew:</span><span style="font-weight: 300;"> </span></p><p style="text-align: left;"><span style="font-weight: 700;">DATE</span><span style="font-weight: 300;">: May 9, 2016 </span></p><p style="text-align: left;"><span style="font-weight: 700;">TIME</span><span style="font-weight: 300;">: 8:00 PM </span></p><p style="text-align: left;"><span style="font-weight: 700;">LOCATION</span><span style="font-weight: 300;">: 67 Independence Lane </span></p><p style="text-align: left;"><span style="font-weight: 700;">RSVP</span><span style="font-weight: 300;">: Binyamin N – Israeljcc@gmail.com</span></p>';
 
         if(text){
-            this.editorContentElement.innerHTML = text;
+            this.editorContentElement.innerHTML = text.text;
         }
 
         this.wrapperElement.appendChild(this.editorContentElement);

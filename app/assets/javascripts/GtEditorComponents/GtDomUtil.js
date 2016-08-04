@@ -120,7 +120,6 @@ export class GtDomUtil extends GtEvent{
     setStyle(node,key,value){
         if(!node) return;
 
-        console.log(value);
         node.style[key] = value;
         return this;
     }

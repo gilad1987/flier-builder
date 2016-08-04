@@ -35,6 +35,9 @@
     </div>
 
     <div ng-if="$ctrl.stateActive == 'upload-image'" class="upload-image">
+
+        <h1>Choose your flyer template from the list of films and designs </h1>
+
         <div class="FlierGallery">
             <div class="item" ng-repeat="tamplate in $ctrl.templates" ng-click="$ctrl.setStateInsertYourText(tamplate)">
                 <img  ng-src="{{::tamplate.imageSrc}}" >
@@ -45,16 +48,17 @@
     </div>
 
     <div ng-if="$ctrl.stateActive == 'insert-text'" class="AddYourText">
+
+        <h1>Click on the text to edit and customize, when you'r done click on "Review and Save"</h1>
+
         <div class="FlierPreview">
-
-
             <div class="Canvas" id="canvas">
                 <img ng-if="$ctrl.currentTemplate.imageSrc" ng-src="{{$ctrl.currentTemplate.imageSrc}}" >
 
                 <gt-editor ng-repeat="editor in $ctrl.currentTemplate.editors"
                            posx="editor.posx"
                            posy="editor.posy"
-                           text="editor.text"
+                           text="editor"
                            editor-width="editor.width"
                            editor-height="editor.height">
                 </gt-editor>
@@ -82,7 +86,7 @@
                 <div class="edit">
                     <div class="table">
                         <div class="cell">
-                            Edit
+                            <i class="fa fa-pencil" aria-hidden="true"></i> Edit
                         </div>
                     </div>
                 </div>

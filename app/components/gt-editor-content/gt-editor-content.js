@@ -3,11 +3,15 @@ import { GtEditorContent } from '../../assets/javascripts/GtEditorComponents/GtE
 
 class gtEditorContentController {
     // @ngInject
-    constructor($log, $element) {
+    constructor($log, $element, $scope) {
         let editorStateCollection = new GtFunctionalityCollection();
         editorStateCollection.addStateCollection(this.states);
         let editor = new GtEditorContent(editorStateCollection,null,this.statesMetadata);
-        editor.render($element[0], this.text);
+        editor.render($element[0], this.text, ()=>{
+            $scope.$apply();
+        });
+
+
     }
 
 }
