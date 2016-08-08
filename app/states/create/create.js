@@ -118,9 +118,24 @@ export class CreateController {
             return;
         }
 
-        html2canvas(document.getElementById('canvas'), {
+        let scaleBy = 5;
+
+        let canvas = document.createElement('canvas');
+        let dom = document.getElementById('canvas');
+        let w = dom.offsetWidth;
+        let h = dom.offsetHeight;
+
+        canvas.width = w * scaleBy;
+        canvas.height = h * scaleBy;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        var context = canvas.getContext('2d');
+        context.scale(scaleBy, scaleBy);
+
+        html2canvas(dom, {
+            canvas:canvas,
             onrendered: (canvas) => {
-                this.flierDataUrl = canvas.toDataURL('image/jpeg');
+                this.flierDataUrl = canvas.toDataURL('image/png');
                 this.canvas = canvas;
                 this.stateActive = 'export';
                 this.$scope.$apply();
