@@ -1,2 +1,16 @@
 .table{display: table;     height: 100%;   width: 100%; }
 .table .cell{    display: table-cell;  vertical-align: middle;}
+
+@keyframes highlight {
+  from {border-color: red;}
+  to {border-color:transparent;}
+}
+
+.focus{
+  border:1px solid transparent;
+  animation: highlight 1200ms infinite;
+}
+
+.Next{
+  margin:30px auto;
+}

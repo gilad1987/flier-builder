@@ -43,10 +43,14 @@ export class GtEditorContent extends GtEditor{
      */
     render(editorParentElement,text, onChange){
         this.wrapperElement = editorParentElement;
-        this.editorContentElement = this.createNewNode('div', null, 'content', null, null, null, {"contenteditable":true});
+        this.editorContentElement = this.createNewNode('div', null, ['content','focus'], null, null, null, {"contenteditable":true});
 
         this.editorContentElement.addEventListener('keydown',(event) => {
             this.onKeyUp(event);
+        });
+
+        this.editorContentElement.addEventListener('focus',(event)=>{
+            event.target.classList.remove('focus');
         });
 
         let selection = new GtSelection();
