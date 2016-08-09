@@ -34,20 +34,20 @@
         </ul>
     </div>
 
-    <div ng-if="$ctrl.stateActive == 'upload-image'" class="upload-image">
+    <div ng-show="$ctrl.stateActive == 'upload-image'" class="upload-image">
 
         <h1>Choose your flyer template from the list of films and designs </h1>
 
         <div class="FlierGallery">
             <div class="item" ng-repeat="tamplate in $ctrl.templates" ng-click="$ctrl.setStateInsertYourText(tamplate)">
-                <img  ng-src="{{::tamplate.imageSrc}}" >
+                <img  ng-src="{{::tamplate.thumbnail}}" >
                 <div class="title">{{::tamplate.title}}</div>
             </div>
         </div>
 
     </div>
 
-    <div ng-if="$ctrl.stateActive == 'insert-text'" class="AddYourText">
+    <div ng-show="$ctrl.stateActive == 'insert-text'" class="AddYourText">
 
         <h1>Click on the text to edit and customize, when you'r done click on "Review and Save"</h1>
 
@@ -89,7 +89,7 @@
                 <div class="edit">
                     <div class="table">
                         <div class="cell">
-                            <i class="fa fa-pencil" aria-hidden="true"></i> Edit and preview
+                            <i class="fa fa-pencil" aria-hidden="true"></i> Edit and Preview
                         </div>
                     </div>
                 </div>
