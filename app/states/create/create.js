@@ -23,7 +23,7 @@ export class CreateController {
 
 
             {
-                title:'Mekonen - the journey of an african jew',
+                title:'Mekonen - The Journey of An African Jew',
                 imageSrc:"/assets/images/states/create/Mekonen.jpg",
                 thumbnail:"/assets/images/states/create/thumbnails/93657192-5beb-4933-a236-d9b17ee2cf92.jpg",
                 editors:[
@@ -37,7 +37,7 @@ export class CreateController {
                 ]
             },
             {
-                title:'Beneath The Helmet',
+                title:'Beneath the Helmet',
                 imageSrc:"/assets/images/states/create/BTH-Template.jpg",
                 thumbnail:"/assets/images/states/create/thumbnails/Benath_The_Helmet_Template.jpg",
                 editors:[
@@ -51,7 +51,7 @@ export class CreateController {
                 ]
             },
             {
-                title:'Crossing the line 2',
+                title:'Crossing the Line 2',
                 imageSrc:"/assets/images/states/create/CTL-Template.jpg",
                 thumbnail:"/assets/images/states/create/thumbnails/CTL_inviteTemplate.jpg",
                 editors:[
