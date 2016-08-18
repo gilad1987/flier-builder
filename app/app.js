@@ -7,8 +7,6 @@ import 'assets/stylesheets/application.scss';
 import 'assets/javascripts/html2canvas/build/html2canvas.js';
 import 'assets/javascripts/GtEditorComponents/closest.polyfill.js';
 
-// require('expose?jsPDF/assets/javascripts/GtEditorComponents/closest.polyfill.js');
-
 import Models     from 'models/models';
 import Services   from 'services/services';
 import Directives from 'directives/directives';

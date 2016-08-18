@@ -86,7 +86,6 @@ export class GtEditorContent extends GtEditor{
 
     onSelectionchange(event){
 
-
         if(this.isStyleChanged){
             return;
         }

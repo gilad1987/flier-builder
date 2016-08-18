@@ -230,10 +230,12 @@ export class CreateController {
         };
 
         var doc = new jsPDF("p", "px", "a4");
-        doc.addImage(this.flierDataUrl , 'JPEG', 0, 0);
+        doc.addImage(this.canvas.toDataURL('image/jpg') , 'JPEG', 0, 0);
         let blob = doc.output('blob');
         let url = URL.createObjectURL(blob);
         printPdf(url);
+
+
      }
 
     getFlayerFileName(){

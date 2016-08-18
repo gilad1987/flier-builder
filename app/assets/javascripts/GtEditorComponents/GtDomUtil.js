@@ -94,7 +94,7 @@ export class GtDomUtil extends GtEvent{
     hasStyle(node,key,value){
         // console.log('hasStyle');
         if(!node) return false;
-        return node.style[key] == value || (value=='' && typeof s == 'undefined');
+        return node.style[key] == value || (value=='' && node.style[key] == null);
     }
 
     isEqualHexToRgb(hex,rgb){
