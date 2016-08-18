@@ -112,13 +112,22 @@ h1{
   margin: 0 auto;
   overflow: hidden;
 
+  p.first{
+    margin-top:20px;
+  }
+
   p{
-    margin:20px 0 50px 0;
     font-size:17px;
     text-align: center;
-
   }
+
+  p.note{
+    margin-bottom:50px;
+    font-style: italic;
+  }
+
   .Actions{
+    margin-top:50px;
     padding: 0 178px;
     overflow: hidden;
     margin-bottom: 100px;

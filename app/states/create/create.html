@@ -36,7 +36,7 @@
 
     <div ng-show="$ctrl.stateActive == 'upload-image'" class="upload-image">
 
-        <h1>Choose your flyer template from the list of films and designs </h1>
+        <h1>Choose your flyer template for the relevant film:</h1>
 
         <div class="FlierGallery">
             <div class="item" ng-repeat="tamplate in $ctrl.templates" ng-click="$ctrl.setStateInsertYourText(tamplate)">
@@ -49,7 +49,7 @@
 
     <div ng-show="$ctrl.stateActive == 'insert-text'" class="AddYourText">
 
-        <h1>Click on the text to edit and customize, when you'r done click on "Review and Save"</h1>
+        <h1> Click on the text to edit and customize. When you're done, click on "Review and Save" or "Next" </h1>
 
         <div class="FlierPreview">
             <div class="Canvas" id="canvas">
@@ -69,6 +69,8 @@
         <div>
             <button class="Next  Button u-Radios-width5 Button--orange-primary Button--primary" ng-click="$ctrl.setStateExport()" > <span>Next</span></button>
         </div>
+
+        <!--<canvas id="canvas1" style="border:2px solid black;" width="700" height="700"></canvas>-->
         <!--<div class="Sidebar">-->
 <!---->
             <!--<h2>Your options</h2>-->
@@ -81,7 +83,9 @@
 
     <div ng-if="$ctrl.stateActive == 'export'"  class="Export">
 
-        <p>Here is a preview of your Flyer. You can either click to <span class="bold">Edit</span> it or choose to <span class="bold">Save</span> or <span class="bold">Print</span> your file.  </p>
+        <p class="first">Here is a preview of your Flyer. You can either click to <span class="bold">Edit</span> it or choose to <span class="bold">Save</span> or <span class="bold">Print</span> your file.  </p>
+        <p>Saving will save a JPG to your computer. You can then print it or send via email.</p>
+
 
         <div class="Actions">
             <div class="Preview" ng-click="$ctrl.setStateInsertYourText()">
@@ -95,16 +99,20 @@
                 </div>
             </div>
 
-            <a ng-href="{{$ctrl.flierDataUrl}}" id="save-file" download="{{$ctrl.getFlayerFileName()}}.png" class=" Button u-Radios-width5 Button--orange-primary Button--secondary"  >
+            <button ng-click="$ctrl.download()" id="save-file" download="{{$ctrl.getFlayerFileName()}}.png" class=" Button u-Radios-width5 Button--orange-primary Button--secondary"  >
                 <i class="fa fa-floppy-o" aria-hidden="true" ></i>
                 <span>Save</span>
-            </a>
+            </button>
+
+
 
             <!--<button ng-click="$ctrl.print()"  class=" Button u-Radios-width5 Button&#45;&#45;orange-primary Button&#45;&#45;secondary"  >-->
                 <!--<i class="fa fa-print" aria-hidden="true"></i>-->
                 <!--<span>Print</span>-->
             <!--</button>-->
         </div>
+
+        <p class="note">*Note: Flyer size is Letterhead. We do not recommend printing in any larger format as it will affect the quality of your flyer</p>
 
     </div>
 
