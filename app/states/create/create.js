@@ -117,6 +117,8 @@ export class CreateController {
             return;
         }
 
+        ga('send', 'event', 'flyer', 'choose', 'template', this.currentTemplate.title);
+
         this.stateActive = 'insert-text';
     }
 
@@ -246,6 +248,7 @@ export class CreateController {
         this.canvas.toBlob((blob)=>{
             let filename = this.getFlayerFileName();
             saveAs(blob, filename);
+            ga('send', 'event', 'flyer', 'save', 'template', this.currentTemplate.title);
         });
 
         // var blob = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
@@ -308,4 +311,5 @@ export class CreateController {
 //     }
 //     pdf.save('TestHTMLDoc.pdf');
 // },'image/jpeg');
+
 
